@@ -1,4 +1,4 @@
-# Apexo Dental Clinic Manager
+<!-- # Apexo Dental Clinic Manager
 
 ![Apexo.app](https://i.imgur.com/Vkdbzb3.png)
 
@@ -18,4 +18,4 @@ A web/desktop application to manage your dental clinic practice.
 
 #### Embedded Apps that can be used separately
 
--   [Cephalometric](https://cephalometric.apexo.app), [repo](https://github.com/alexcorvi/cephalometric)
+-   [Cephalometric](https://cephalometric.apexo.app), [repo](https://github.com/alexcorvi/cephalometric) -->
