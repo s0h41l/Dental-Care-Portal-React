@@ -68,7 +68,7 @@ export class ConsentsDetailsPanel extends React.Component<
             <label>Consent Notes</label>
 
             <Editor
-              editorStyle={{ height: 900 }}
+              editorStyle={{ height: 500 }}
               editorState={this.state.editorState}
               toolbarClassName="toolbarClassName"
               wrapperClassName="wrapperClassName"
