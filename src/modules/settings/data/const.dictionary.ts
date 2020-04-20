@@ -6,6 +6,7 @@ export const dictionary = {
 	module_endodontics: "module_endodontics",
 	module_statistics: "module_statistics",
 	time_tracking: "time_tracking",
+	module_consents: "module_consents",
 	backup_freq: "backup_freq",
 	backup_retain: "backup_retain",
 	dropbox_accessToken: "dropbox_accessToken",

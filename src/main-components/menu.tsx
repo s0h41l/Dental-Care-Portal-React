@@ -5,54 +5,53 @@ import * as React from "react";
 
 @observer
 export class MenuView extends React.Component<any, any> {
-	public render() {
-		return (
-			<div>
-				<div className="visible-lg visible-md icon-list">
-					{menu.sortedItems.map((item, index) => {
-						return (
-							<div
-								key={index}
-								className={
-									"item " +
-									(menu.currentIndex === index
-										? "selected"
-										: "")
-								}
-								onClick={item.onClick}
-							>
-								<Icon iconName={item.icon} />
-								<span className="text">{text(item.name)}</span>
-							</div>
-						);
-					})}
-				</div>
-				<Panel
-					className="menu"
-					isLightDismiss={true}
-					isOpen={menu.visible}
-					type={PanelType.smallFixedNear}
-					onDismiss={() => (menu.visible = false)}
-					hasCloseButton={false}
-				>
-					<Nav
-						groups={[
-							{
-								links: menu.sortedItems.map(x => {
-									return {
-										icon: x.icon,
-										name: text(x.name),
-										key: x.key,
-										url: x.url,
-										onClick: x.onClick
-									};
-								})
-							}
-						]}
-						selectedKey={router.currentNamespace}
-					/>
-				</Panel>
-			</div>
-		);
-	}
+  public render() {
+    return (
+      <div>
+        <div className="visible-lg visible-md icon-list">
+          {menu.sortedItems.map((item, index) => {
+            console.log(item.name, item.key);
+            return (
+              <div
+                key={index}
+                className={
+                  "item " + (menu.currentIndex === index ? "selected" : "")
+                }
+                onClick={item.onClick}
+              >
+                <Icon iconName={item.icon} />
+                <span className="text">{text(item.name)}</span>
+              </div>
+            );
+          })}
+        </div>
+        <Panel
+          className="menu"
+          isLightDismiss={true}
+          isOpen={menu.visible}
+          type={PanelType.smallFixedNear}
+          onDismiss={() => (menu.visible = false)}
+          hasCloseButton={false}
+        >
+          <Nav
+            groups={[
+              {
+                links: menu.sortedItems.map((x) => {
+                  console.log(x.key, x.icon, x.name, x.url);
+                  return {
+                    icon: x.icon,
+                    name: text(x.name),
+                    key: x.key,
+                    url: x.url,
+                    onClick: x.onClick,
+                  };
+                }),
+              },
+            ]}
+            selectedKey={router.currentNamespace}
+          />
+        </Panel>
+      </div>
+    );
+  }
 }

@@ -15,6 +15,8 @@ export class StaffMember {
 
 	@observable operates: boolean = true;
 
+	@observable canEditConsents: boolean = true;
+
 	@observable canEditStaff: boolean = true;
 	@observable canEditPatients: boolean = true;
 	@observable canEditOrtho: boolean = true;

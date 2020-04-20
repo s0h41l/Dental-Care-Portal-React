@@ -40,7 +40,6 @@ class MenuData {
 			}, [])
 			// .sort((a, b) => a.order - b.order)
 			.filter(item => !item.condition || item.condition());
-
 			items.push(
 				{
 					icon: "message",

@@ -10,4 +10,5 @@ export * from "./staff";
 export * from "./statistics";
 export * from "./treatments";
 export * from "./insurance";
+export * from "./consents";
 export * from "./register-modules";

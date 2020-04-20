@@ -8,7 +8,8 @@ import {
 	registerStaff,
 	registerStats,
 	registerTreatments,
-	registerInsurance
+	registerInsurance,
+	registerConsents
 } from "@modules";
 
 const register = [
@@ -21,7 +22,8 @@ const register = [
 	registerStaff,
 	registerOrthodontic,
 	registerEndodontic,
-	registerInsurance
+	registerInsurance,
+	registerConsents
 ];
 
 let alreadyRegistered = false;
