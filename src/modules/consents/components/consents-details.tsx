@@ -14,6 +14,7 @@ import { observer } from "mobx-react";
 import { Dropdown, TextField } from "office-ui-fabric-react";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import * as React from "react";
 
@@ -66,13 +67,13 @@ export class ConsentsDetailsPanel extends React.Component<
 
             <label>Consent Notes</label>
 
-            {/* <Editor                 
-                        editorState={this.state.editorState}
-                        toolbarClassName="toolbarClassName"
-                        wrapperClassName="wrapperClassName"
-                        editorClassName="editorClassName"
-                        onEditorStateChange={this.onEditorStateChange}
-                   />        */}
+            <Editor
+              editorState={this.state.editorState}
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              onEditorStateChange={this.onEditorStateChange}
+            />
           </div>
         </SectionComponent>
       </div>
