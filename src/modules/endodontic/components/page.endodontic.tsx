@@ -15,7 +15,8 @@ import {
 	Patient,
 	PatientAppointmentsPanel,
 	patients,
-	setting
+	setting,
+	Diagnosis
 	} from "@modules";
 import { formatDate } from "@utils";
 import { computed, observable } from "mobx";
@@ -70,7 +71,7 @@ export class EndoPage extends React.Component<{}, {}> {
 					className={"orthodontic-cases-data-table"}
 					heads={[
 						text("Endodontic Patient"),
-						text("Started/Finished Treatment"),
+						text("Started/Finished Laboratory"),
 						text("Last/Next Appointment"),
 						text("Total/Outstanding Payments")
 					]}
@@ -252,14 +253,15 @@ export class EndoPage extends React.Component<{}, {}> {
 																	orthoCase.startedDate,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 															  )
 															: ""
 													}
 													subText={
 														orthoCase.isStarted
 															? text(
-																	"Started treatment"
+																	"Started Lab Order"
 															  )
 															: text(
 																	"Has not started yet"
@@ -284,14 +286,15 @@ export class EndoPage extends React.Component<{}, {}> {
 																	orthoCase.finishedDate,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 															  )
 															: ""
 													}
 													subText={
 														orthoCase.isFinished
 															? text(
-																	"Finished treatment"
+																	"Finished Laboratory"
 															  )
 															: text(
 																	"Has not finished yet"
@@ -329,7 +332,7 @@ export class EndoPage extends React.Component<{}, {}> {
 																? patient
 																		.lastAppointment
 																		.treatment
-																		.type
+																		.item
 																: ""
 															: ""
 													}
@@ -341,7 +344,8 @@ export class EndoPage extends React.Component<{}, {}> {
 																		.date,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 															  )
 															: text(
 																	"No last appointment"
@@ -368,7 +372,7 @@ export class EndoPage extends React.Component<{}, {}> {
 																? patient
 																		.nextAppointment
 																		.treatment
-																		.type
+																		.item
 																: ""
 															: ""
 													}
@@ -380,7 +384,8 @@ export class EndoPage extends React.Component<{}, {}> {
 																		.date,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 															  )
 															: text(
 																	"No next appointment"
@@ -649,11 +654,19 @@ export class EndoPage extends React.Component<{}, {}> {
 
 
 									<div style={{width: '65%',backgroundColor: '#fff', padding: '8px',  marginLeft: 'auto'}}>
-											<DentalHistoryPanel patient={this.selectedPatient!} />
+									<DentalHistoryPanel patient={this.selectedPatient!} onClick={(val) => {
+															let diag = new Diagnosis();
+															diag.id = val.key; 
+															diag.name = val.name;
+															diag.tooth = Number(val.tooth);
+															diag.diagnosis = val.diagnosis;
+															this.selectedPatient!.diagnosis.push(diag);
+														
+														}} />
 									</div>
 
 									<div style={{width: '100%', borderTop: '1px solid #999'}}>
-										<PatientProcedures patient={this.selectedPatient!} />
+										
 									</div>
 								</div>
 </div>

@@ -53,7 +53,7 @@ export class EndoCase {
 	/**
 	 * inputs
 	 */
-	@observable workinglength: number = 0; //In mm
+	@observable workinglen:  string[] = []; //In mm
 	@observable canals: number = 1; //whole numbers
 
 	
@@ -62,6 +62,7 @@ export class EndoCase {
 	 * conclusions
 	 */
 	@observable problemsList: string[] = [];
+	@observable problemsOther: string = "";
 	@observable treatmentPlan_appliance: string[] = [];
 
 	@observable orthoGallery: string[] = [];
@@ -112,28 +113,30 @@ export class EndoCase {
 			${
 				this.patient.nextAppointment
 					? (this.patient.nextAppointment.treatment || { type: "" })
-							.type
+							.item
 					: ""
 			}
 			${
 				this.patient.nextAppointment
 					? formatDate(
 							this.patient.nextAppointment.date,
-							setting.getSetting("date_format")
+							setting.getSetting("date_format"),
+							setting.getSetting("month_format")
 					  )
 					: ""
 			}
 			${
 				this.patient.lastAppointment
 					? (this.patient.lastAppointment.treatment || { type: "" })
-							.type
+							.item
 					: ""
 			}
 			${
 				this.patient.lastAppointment
 					? formatDate(
 							this.patient.lastAppointment.date,
-							setting.getSetting("date_format")
+							setting.getSetting("date_format"),
+							setting.getSetting("month_format")
 					  )
 					: ""
 			}
@@ -175,8 +178,9 @@ export class EndoCase {
 			access: this.access,
 			cleaning: this.cleaning,
 			obturation: this.obturation,	
-			workinglength:  this.workinglength,
+			workinglen:  Array.from(this.workinglen),
 			canals:  this.canals,
+			problemsOther: this.problemsOther,
 
 			problemsList: Array.from(this.problemsList),			
 			treatmentPlan_appliance: Array.from(this.treatmentPlan_appliance),
@@ -197,8 +201,9 @@ export class EndoCase {
 		this.access = json.access,
 		this.cleaning = json.cleaning,
 		this.obturation = json.obturation,
-		this.workinglength = json.workinglength,
+		this.workinglen = json.workinglen || [],
 		this.canals = json.canals,		
+		this.problemsOther = json.problemsOther,
 		
 		this.cephalometricHistory = json.cephalometricHistory || [];
 		this.isFinished = !!json.isFinished;

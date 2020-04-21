@@ -76,7 +76,7 @@ export class OrthoRecordsPanel extends React.Component<{
 		return this.props.orthoCase.patient.appointments
 			.map(appointment => ({
 				date: appointment.date,
-				treatmentType: (appointment.treatment || { type: "" }).type
+				treatmentType: (appointment.treatment || { type: "" }).item
 			}))
 			.sort((a, b) => b.date - a.date);
 	}
@@ -164,13 +164,13 @@ export class OrthoRecordsPanel extends React.Component<{
 						/>
 					)}
 				</SectionComponent>
-				<SectionComponent title={text(`Treatment Plan`)}>
+				<SectionComponent title={text(`Laboratory Plan`)}>
 					{this.props.orthoCase.treatmentPlan_appliance.length ? (
 						""
 					) : (
 						<MessageBar messageBarType={MessageBarType.warning}>
 							{text(
-								"A treatment plan must be before starting the treatment"
+								"A Lab Order must be done before starting the treatment"
 							)}
 						</MessageBar>
 					)}
@@ -206,7 +206,8 @@ export class OrthoRecordsPanel extends React.Component<{
 												date.date,
 												setting.getSetting(
 													"date_format"
-												)
+												),
+												setting.getSetting("month_format")
 											)} ${
 												date.treatmentType
 													? `, ${date.treatmentType}`
@@ -245,7 +246,8 @@ export class OrthoRecordsPanel extends React.Component<{
 												date.date,
 												setting.getSetting(
 													"date_format"
-												)
+												),
+												setting.getSetting("month_format")
 											)} ${
 												date.treatmentType
 													? `, ${date.treatmentType}`
@@ -409,7 +411,8 @@ export class OrthoRecordsPanel extends React.Component<{
 																			visit.date,
 																			setting.getSetting(
 																				"date_format"
-																			)
+																			),
+																			setting.getSetting("month_format")
 																		)}`}
 																	>
 																		<IconButton
@@ -510,7 +513,8 @@ export class OrthoRecordsPanel extends React.Component<{
 																												date.date,
 																												setting.getSetting(
 																													"date_format"
-																												)
+																												),
+																												setting.getSetting("month_format")
 																											)} ${
 																												date.treatmentType
 																													? `, ${
@@ -541,7 +545,8 @@ export class OrthoRecordsPanel extends React.Component<{
 																								visit.date,
 																								setting.getSetting(
 																									"date_format"
-																								)
+																								),
+																								setting.getSetting("month_format")
 																							)}`
 																						)}
 																					</div>
@@ -818,7 +823,8 @@ export class OrthoRecordsPanel extends React.Component<{
 																																			date.date,
 																																			setting.getSetting(
 																																				"date_format"
-																																			)
+																																			),
+																																			setting.getSetting("month_format")
 																																		)} ${
 																																			date.treatmentType
 																																				? `, ${
@@ -849,7 +855,8 @@ export class OrthoRecordsPanel extends React.Component<{
 																															visit.date,
 																															setting.getSetting(
 																																"date_format"
-																															)
+																															),
+																															setting.getSetting("month_format")
 																														)}`
 																													)}
 																												</div>

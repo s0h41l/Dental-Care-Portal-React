@@ -8,10 +8,11 @@ export interface EndoCaseJSON {
 	access: keyof typeof Access;
 	cleaning: keyof typeof Cleaning;	
 	obturation: keyof typeof Obturation;	
-	workinglength:  number;
+	workinglen:  string[];
 	canals:  number;
 	
 	problemsList: string[];
+	problemsOther: string;
 	treatmentPlan_appliance: string[];
 	orthoGallery: string[];
 	cephalometricHistory: CephalometricItem[];

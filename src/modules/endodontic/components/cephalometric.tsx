@@ -77,7 +77,8 @@ export class CephalometricEditorPanel extends React.Component<{
 									formatDate={d =>
 										formatDate(
 											d || 0,
-											setting.getSetting("date_format")
+											setting.getSetting("date_format"),
+											setting.getSetting("month_format")
 										)
 									}
 								/>

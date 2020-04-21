@@ -16,7 +16,7 @@ export const registerEndodontic = {
 				user.currentUser.canViewOrtho
 		});
 		menu.items.push({
-			icon: "MiniLink",
+			icon: "../images/endo.png",
 			name: endoNamespace,
 			key: endoNamespace,
 			onClick: () => {
@@ -35,5 +35,5 @@ export const registerEndodontic = {
 		);
 		return true;
 	},
-	order: 7
+	order: 5
 };

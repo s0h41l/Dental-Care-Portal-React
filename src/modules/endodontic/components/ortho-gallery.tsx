@@ -105,7 +105,8 @@ export class OrthoGalleryPanel extends React.Component<{
 																	c.date,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 																)}
 															</span>
 														}
