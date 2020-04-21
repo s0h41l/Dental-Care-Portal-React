@@ -9,5 +9,3 @@ export * from "./interface.label";
 export * from "./interface.patient-json";
 export * from "./interface.procedures-json";
 export * from "./interface.tooth-json";
-export * from "./interface.payment-json";
-export * from "./class.payment";

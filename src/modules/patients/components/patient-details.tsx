@@ -88,6 +88,16 @@ export class PatientDetailsPanel extends React.Component<{
 					/>
 
 					<TextField
+						label={text("WhatsApp Phone")}
+						value={this.props.patient.whatsapphone}
+						onChange={(ev, phone) =>
+							(this.props.patient.whatsapphone = phone!)
+						}
+						type="telephone"
+						disabled={!this.canEdit}
+					/>
+
+					<TextField
 						label={text("Email")}
 						value={this.props.patient.email}
 						onChange={(ev, email) =>

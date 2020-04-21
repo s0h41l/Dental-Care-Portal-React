@@ -19,12 +19,11 @@ export class Tooth {
 
 	@observable condition: keyof typeof ToothCondition = "sound";
 
+	@observable diagnosis_key: string = '';
+
+	@observable diagnosis_val: string = '';
+
 	@observable notes: string[] = [];
-	@observable diagnosis: {
-		id: string,
-		value: string,
-		date: Date
-	} = { id: "", value: "", date: new Date() };
 
 	constructor(input: number | ToothJSON | null) {
 		if (typeof input === "number") {
@@ -37,16 +36,18 @@ export class Tooth {
 	fromJSON(input: ToothJSON) {
 		this.ISO = input.ISO;
 		this.condition = input.condition;
+		this.diagnosis_key = input.diagnosis_key;
+		this.diagnosis_val = input.diagnosis_val;
 		this.notes = input.notes;
-		this.diagnosis = input.diagnosis;
 	}
 
 	toJSON(): ToothJSON {
 		return {
 			ISO: this.ISO,
 			condition: this.condition,
-			notes: Array.from(this.notes),
-			diagnosis: this.diagnosis
+			diagnosis_key: this.diagnosis_key,
+			diagnosis_val: this.diagnosis_val,
+			notes: Array.from(this.notes)
 		};
 	}
 }

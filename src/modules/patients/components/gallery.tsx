@@ -24,14 +24,11 @@ export interface ISliderBasicExampleState {
 	endPosY: number;
 }
 
-
 @observer
 export class PatientGalleryPanel extends React.Component<
 	{ patient: Patient },
 	{}
 > {
-
-
 
 	@computed get canEdit() {
 		// return user.currentUser.canEditPatients;
@@ -218,14 +215,7 @@ export class PatientGalleryPanel extends React.Component<
 											largeImageSrc={this.state.image}
 										/> */}
 
-<PinchZoomPan maxScale={100} scale={this.state.zoom} zoomButtons={false} filterValue={this.state.value}
-// style={{
-// 					filter: `grayscale(${this.state.value}%)`,
-// 					cursor: this.state.zoom > 0 ? 'move' : 'default',
-// 				}}
-				>
-				<img alt='image' src={`${this.selectedImageURI}`}  />
-</PinchZoomPan>
+
 
 										{/* <MagnifierContainer>
 										<div className="example-class">

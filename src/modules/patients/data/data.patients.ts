@@ -30,6 +30,27 @@ class PatientsData {
 		orthoCases.deleteByPatientID(patient._id);
 	}
 
+	/*removeDiagnosisModal(patient: Patient, index: number){
+		modals.newModal({
+			message: `${text("Delete the diagnosis for this tooth?")}.`,
+			onConfirm: () => this.removeDiagnosis(patient, index),
+			showCancelButton: true,
+			showConfirmButton: true,
+			input: false,
+			id: Math.random()
+		});
+	}*/
+
+	removeDiagnosis(patient: Patient, index: number){
+		patient.teeth[
+			index
+		].diagnosis_key = ''; 
+
+		patient.teeth[
+			index
+		].diagnosis_val = ''; 
+	}
+
 	deleteModal(id: string) {
 		const i = this.findIndexByID(id);
 
