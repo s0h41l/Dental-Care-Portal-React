@@ -5,7 +5,7 @@ export const registerTreatments = {
 	async register() {
 		router.register({
 			namespace: treatmentsNamespace,
-			regex: /^treatments/,
+			regex: /^labs/,
 			component: async () => {
 				const Component = (await import("./components/page.treatments"))
 					.Treatments;
@@ -31,5 +31,5 @@ export const registerTreatments = {
 		)) as any)(Treatment, treatments);
 		return true;
 	},
-	order: 3
+	order: 8
 };

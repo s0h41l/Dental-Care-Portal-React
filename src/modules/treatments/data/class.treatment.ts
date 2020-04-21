@@ -1,5 +1,5 @@
 import { TreatmentJSON } from "@modules";
-import { generateID } from "@utils";
+import { generateID , formatDateInternal} from "@utils";
 import { computed, observable } from "mobx";
 
 export class Treatment {
@@ -7,22 +7,41 @@ export class Treatment {
 
 	_id: string = generateID();
 
-	@observable type: string = "";
+	@observable c_date: string = formatDateInternal(new Date());
 
-	@observable expenses: number = 0;
+	@observable item: string = "";
+
+	@observable desc: string = "";
+
+	@observable lab_name: string = "";
+
+	@observable patient_name: string = "";
+
+	@observable fees: string = "";
+
+	@observable status: string = "";
+
+//	@observable type: string = "";
+
+//	@observable expenses: number = 0;
 
 	@computed
 	get searchableString() {
 		return `
-			${this.type} expenses ${this.expenses}
+			${this.item} expenses ${this.desc}
 		`.toLowerCase();
 	}
 
 	public toJSON(): TreatmentJSON {
 		return {
 			_id: this._id,
-			type: this.type,
-			expenses: this.expenses
+			c_date: this.c_date,
+			item: this.item,
+			desc: this.desc,
+			lab_name: this.lab_name,
+			patient_name: this.patient_name,
+			fees: this.fees,
+			status: this.status
 		};
 	}
 
@@ -34,7 +53,12 @@ export class Treatment {
 
 	fromJSON(json: TreatmentJSON) {
 		this._id = json._id;
-		this.type = json.type;
-		this.expenses = json.expenses || 0;
+		this.c_date = json.c_date;
+		this.item = json.item;
+		this.desc = json.desc;
+		this.lab_name = json.lab_name;
+		this.patient_name = json.patient_name;
+		this.fees = json.fees;
+		this.status = json.status;
 	}
 }

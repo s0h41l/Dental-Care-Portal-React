@@ -1,1 +1,1 @@
-export const treatmentsNamespace = "treatments";
+export const treatmentsNamespace = "labs";
