@@ -60,9 +60,7 @@ export class ChooseUserComponent extends React.Component<{}, {}> {
             <TextField
               value={this.password}
               onChange={(ev, v) => (this.password = v!)}
-              label={text(
-                "Enter Password for No-Server-Mode. (Please do not forgot this password!!)"
-              )}
+              label={text("Password")}
             />
             <PrimaryButton
               onClick={() => {
