@@ -40,7 +40,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
         return this.props.orthoCase.patient.appointments
             .map(appointment => ({
             date: appointment.date,
-            treatmentType: (appointment.treatment || { type: "" }).type
+            treatmentType: (appointment.treatment || { type: "" }).item
         }))
             .sort((a, b) => b.date - a.date);
     }
@@ -102,8 +102,8 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                         ...this.props.orthoCase.problemsList.map(x => text("Patient concern") + ": " + x)
                     ].map((x, i) => [`${i + 1}. ${x}`])
                 ], isHeaderVisible: false, selectionMode: SelectionMode.none }))),
-            React.createElement(SectionComponent, { title: text(`Treatment Plan`) },
-                this.props.orthoCase.treatmentPlan_appliance.length ? ("") : (React.createElement(MessageBar, { messageBarType: MessageBarType.warning }, text("A treatment plan must be before starting the treatment"))),
+            React.createElement(SectionComponent, { title: text(`Laboratory Plan`) },
+                this.props.orthoCase.treatmentPlan_appliance.length ? ("") : (React.createElement(MessageBar, { messageBarType: MessageBarType.warning }, text("A Lab Order must be done before starting the treatment"))),
                 React.createElement(EditableListComponent, { label: text(`Add Plan`), value: this.props.orthoCase.treatmentPlan_appliance, onChange: val => {
                         this.props.orthoCase.treatmentPlan_appliance = val;
                         this.tu();
@@ -115,7 +115,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                         this.props.orthoCase.isStarted ? (React.createElement(Dropdown, { selectedKey: this.props.orthoCase.startedDate.toString(), options: this.dates.map(date => {
                                 return {
                                     key: date.date.toString(),
-                                    text: `${formatDate(date.date, setting.getSetting("date_format"))} ${date.treatmentType
+                                    text: `${formatDate(date.date, setting.getSetting("date_format"), setting.getSetting("month_format"))} ${date.treatmentType
                                         ? `, ${date.treatmentType}`
                                         : ""}`
                                 };
@@ -128,7 +128,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                         this.props.orthoCase.isFinished ? (React.createElement(Dropdown, { selectedKey: this.props.orthoCase.finishedDate.toString(), options: this.dates.map(date => {
                                 return {
                                     key: date.date.toString(),
-                                    text: `${formatDate(date.date, setting.getSetting("date_format"))} ${date.treatmentType
+                                    text: `${formatDate(date.date, setting.getSetting("date_format"), setting.getSetting("month_format"))} ${date.treatmentType
                                         ? `, ${date.treatmentType}`
                                         : ""}`
                                 };
@@ -196,7 +196,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                             return [
                                 React.createElement("tr", { key: visit.id },
                                     React.createElement("td", null,
-                                        React.createElement(TooltipHost, { content: `#${visit.visitNumber}, ${formatDate(visit.date, setting.getSetting("date_format"))}` },
+                                        React.createElement(TooltipHost, { content: `#${visit.visitNumber}, ${formatDate(visit.date, setting.getSetting("date_format"), setting.getSetting("month_format"))}` },
                                             React.createElement(IconButton, { id: visit.id.replace(/[0-9]/g, ""), iconProps: {
                                                     iconName: "info"
                                                 }, onClick: () => {
@@ -227,7 +227,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                                                                 .canEdit, options: this.dates.map(date => {
                                                                 return {
                                                                     key: date.date.toString(),
-                                                                    text: `${formatDate(date.date, setting.getSetting("date_format"))} ${date.treatmentType
+                                                                    text: `${formatDate(date.date, setting.getSetting("date_format"), setting.getSetting("month_format"))} ${date.treatmentType
                                                                         ? `, ${date.treatmentType}`
                                                                         : ""}`
                                                                 };
@@ -235,7 +235,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                                                                 this.props.orthoCase.visits[visitIndex].date = num(newValue
                                                                     .key);
                                                                 this.tu();
-                                                            } })) : (`${text("Date")}: ${formatDate(visit.date, setting.getSetting("date_format"))}`))
+                                                            } })) : (`${text("Date")}: ${formatDate(visit.date, setting.getSetting("date_format"), setting.getSetting("month_format"))}`))
                                                     ],
                                                     [
                                                         React.createElement("div", { id: "gf-appliance" }, this
@@ -331,7 +331,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                                                                         .canEdit, selectedKey: visit.date.toString(), options: this.dates.map(date => {
                                                                         return {
                                                                             key: date.date.toString(),
-                                                                            text: `${formatDate(date.date, setting.getSetting("date_format"))} ${date.treatmentType
+                                                                            text: `${formatDate(date.date, setting.getSetting("date_format"), setting.getSetting("month_format"))} ${date.treatmentType
                                                                                 ? `, ${date.treatmentType}`
                                                                                 : ""}`
                                                                         };
@@ -339,7 +339,7 @@ let OrthoRecordsPanel = class OrthoRecordsPanel extends React.Component {
                                                                         this.props.orthoCase.visits[visitIndex].date = num(newValue
                                                                             .key);
                                                                         this.tu();
-                                                                    } })) : (`${text("Date")}: ${formatDate(visit.date, setting.getSetting("date_format"))}`))
+                                                                    } })) : (`${text("Date")}: ${formatDate(visit.date, setting.getSetting("date_format"), setting.getSetting("month_format"))}`))
                                                             ],
                                                             [
                                                                 React.createElement("div", { id: "gf-appliance" }, this

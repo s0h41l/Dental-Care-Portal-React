@@ -42,7 +42,7 @@ let OrthoGalleryPanel = class OrthoGalleryPanel extends React.Component {
                             }, onClick: () => {
                                 this.cephalometricToViewIndex = i;
                             }, key: i },
-                            React.createElement(ProfileComponent, { name: `${i + 1}: ${text("Analysis")} #${i + 1}`, secondaryElement: React.createElement("span", null, formatDate(c.date, setting.getSetting("date_format"))), size: 3, onClick: () => {
+                            React.createElement(ProfileComponent, { name: `${i + 1}: ${text("Analysis")} #${i + 1}`, secondaryElement: React.createElement("span", null, formatDate(c.date, setting.getSetting("date_format"), setting.getSetting("month_format"))), size: 3, onClick: () => {
                                     this.openCephalometricItem = this.props.orthoCase.cephalometricHistory[i];
                                 } }))),
                     React.createElement(Col, { xs: 4, style: {

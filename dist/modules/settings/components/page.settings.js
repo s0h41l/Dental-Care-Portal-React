@@ -70,6 +70,9 @@ let SettingsPage = class SettingsPage extends React.Component {
                     }, disabled: !this.canEdit }),
                 React.createElement(Toggle, { onText: text("Time tracking enabled"), offText: text("Time tracking disabled"), defaultChecked: !!setting.getSetting("time_tracking"), onChange: (ev, val) => {
                         setting.setSetting("time_tracking", val ? "enable" : "");
+                    }, disabled: !this.canEdit }),
+                React.createElement(Toggle, { onText: text("Consents enabled"), offText: text("Consents tracking disabled"), defaultChecked: !!setting.getSetting("module_consents"), onChange: (ev, val) => {
+                        setting.setSetting("module_consents", val ? "enable" : "");
                     }, disabled: !this.canEdit })),
             React.createElement(SectionComponent, { title: text(`Backup and Restore`) }, status.online ? (React.createElement("div", null,
                 React.createElement(DefaultButton, { onClick: () => {

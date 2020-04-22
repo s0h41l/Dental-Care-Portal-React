@@ -14,7 +14,7 @@ class TreatmentData {
         const i = this.getIndexByID(id);
         const treatment = this.list[i];
         modals.newModal({
-            message: `${text("Treatment")} "${treatment.type}" ${text("will be deleted")}`,
+            message: `${text("Lab order ")} "${treatment.item}" ${text("will be deleted")}`,
             onConfirm: () => {
                 this.deleteByID(id);
             },
@@ -29,7 +29,7 @@ class TreatmentData {
         const treatment = this.list.splice(i, 1)[0];
         appointments.list.forEach((appointment, index) => {
             if (appointment.treatmentID === treatment._id) {
-                appointments.list[index].treatmentID = `${treatment.type}|${treatment.expenses}`;
+                appointments.list[index].treatmentID = `${treatment.item}|${treatment.fees}`;
             }
         });
     }

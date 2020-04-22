@@ -1,12 +1,11 @@
 import * as tslib_1 from "tslib";
 import { AsyncComponent, Col, DataTableComponent, ProfileComponent, ProfileSquaredComponent, Row, TagInputComponent } from "@common-components";
 import { text, user } from "@core";
-import { genderToString, EndoCase, endoCases, Patient, PatientAppointmentsPanel, patients, setting } from "@modules";
+import { genderToString, EndoCase, endoCases, Patient, PatientAppointmentsPanel, patients, setting, Diagnosis } from "@modules";
 import { formatDate } from "@utils";
 import { computed, observable } from "mobx";
 import { observer } from "mobx-react";
 import { DefaultButton, Icon, IconButton, Panel, PanelType, PersonaInitialsColor, TextField, TooltipHost } from "office-ui-fabric-react";
-import { PatientProcedures } from "../../patients/components/patient-procedures";
 import { DentalHistoryPanel } from "../../patients/components/dental-history";
 import * as React from "react";
 let EndoPage = class EndoPage extends React.Component {
@@ -34,7 +33,7 @@ let EndoPage = class EndoPage extends React.Component {
         return (React.createElement("div", { className: "orthodontic-cases-component p-15 p-l-10 p-r-10" },
             React.createElement(DataTableComponent, { maxItemsOnLoad: 10, className: "orthodontic-cases-data-table", heads: [
                     text("Endodontic Patient"),
-                    text("Started/Finished Treatment"),
+                    text("Started/Finished Laboratory"),
                     text("Last/Next Appointment"),
                     text("Total/Outstanding Payments")
                 ], rows: endoCases.filtered
@@ -117,17 +116,17 @@ let EndoPage = class EndoPage extends React.Component {
                                     : orthoCase.startedDate,
                                 component: (React.createElement("div", null,
                                     React.createElement(ProfileSquaredComponent, { text: orthoCase.isStarted
-                                            ? formatDate(orthoCase.startedDate, setting.getSetting("date_format"))
+                                            ? formatDate(orthoCase.startedDate, setting.getSetting("date_format"), setting.getSetting("month_format"))
                                             : "", subText: orthoCase.isStarted
-                                            ? text("Started treatment")
+                                            ? text("Started Lab Order")
                                             : text("Has not started yet"), size: 3, onRenderInitials: () => (React.createElement(Icon, { iconName: "info" })), onClick: () => { }, initialsColor: orthoCase.isStarted
                                             ? PersonaInitialsColor.teal
                                             : PersonaInitialsColor.transparent }),
                                     React.createElement("br", null),
                                     React.createElement(ProfileSquaredComponent, { text: orthoCase.isFinished
-                                            ? formatDate(orthoCase.finishedDate, setting.getSetting("date_format"))
+                                            ? formatDate(orthoCase.finishedDate, setting.getSetting("date_format"), setting.getSetting("month_format"))
                                             : "", subText: orthoCase.isFinished
-                                            ? text("Finished treatment")
+                                            ? text("Finished Laboratory")
                                             : text("Has not finished yet"), size: 3, onRenderInitials: () => (React.createElement(Icon, { iconName: "CheckMark" })), onClick: () => { }, initialsColor: orthoCase.isFinished
                                             ? PersonaInitialsColor.blue
                                             : PersonaInitialsColor.transparent }))),
@@ -145,12 +144,12 @@ let EndoPage = class EndoPage extends React.Component {
                                                 ? patient
                                                     .lastAppointment
                                                     .treatment
-                                                    .type
+                                                    .item
                                                 : ""
                                             : "", subText: patient.lastAppointment
                                             ? formatDate(patient
                                                 .lastAppointment
-                                                .date, setting.getSetting("date_format"))
+                                                .date, setting.getSetting("date_format"), setting.getSetting("month_format"))
                                             : text("No last appointment"), size: 3, onRenderInitials: () => (React.createElement(Icon, { iconName: "Previous" })), onClick: () => { }, initialsColor: patient.lastAppointment
                                             ? undefined
                                             : PersonaInitialsColor.transparent }),
@@ -162,12 +161,12 @@ let EndoPage = class EndoPage extends React.Component {
                                                 ? patient
                                                     .nextAppointment
                                                     .treatment
-                                                    .type
+                                                    .item
                                                 : ""
                                             : "", subText: patient.nextAppointment
                                             ? formatDate(patient
                                                 .nextAppointment
-                                                .date, setting.getSetting("date_format"))
+                                                .date, setting.getSetting("date_format"), setting.getSetting("month_format"))
                                             : text("No next appointment"), size: 3, onRenderInitials: () => (React.createElement(Icon, { iconName: "Next" })), onClick: () => { }, initialsColor: patient.nextAppointment
                                             ? undefined
                                             : PersonaInitialsColor.transparent }))),
@@ -298,9 +297,15 @@ let EndoPage = class EndoPage extends React.Component {
                     this.viewWhich === 2 && (React.createElement("div", null,
                         React.createElement("div", { style: { width: '100%' } },
                             React.createElement("div", { style: { width: '65%', backgroundColor: '#fff', padding: '8px', marginLeft: 'auto' } },
-                                React.createElement(DentalHistoryPanel, { patient: this.selectedPatient })),
-                            React.createElement("div", { style: { width: '100%', borderTop: '1px solid #999' } },
-                                React.createElement(PatientProcedures, { patient: this.selectedPatient }))))),
+                                React.createElement(DentalHistoryPanel, { patient: this.selectedPatient, onClick: (val) => {
+                                        let diag = new Diagnosis();
+                                        diag.id = val.key;
+                                        diag.name = val.name;
+                                        diag.tooth = Number(val.tooth);
+                                        diag.diagnosis = val.diagnosis;
+                                        this.selectedPatient.diagnosis.push(diag);
+                                    } })),
+                            React.createElement("div", { style: { width: '100%', borderTop: '1px solid #999' } })))),
                     this.viewWhich === 3 ? (React.createElement(AsyncComponent, { key: "ortho-case-sheet", loader: () => tslib_1.__awaiter(this, void 0, void 0, function* () {
                             const Component = (yield import("./case-sheet"))
                                 .EndoCaseSheetPanel;

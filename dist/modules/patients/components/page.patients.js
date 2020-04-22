@@ -1,11 +1,11 @@
 import * as tslib_1 from "tslib";
-import { AsyncComponent, Col, DataTableComponent, ProfileComponent, ProfileSquaredComponent, Row, TagComponent } from "@common-components";
+import { AsyncComponent, Col, DataTableComponent, ProfileComponent, ProfileSquaredComponent, Row, TagComponent, } from "@common-components";
 import { router, text, user } from "@core";
-import { genderToString, Patient, PatientAppointmentsPanel, PatientAppointmentsPanelV2, PatientGalleryPanel, PatientPaymentPanel, patients, staff, appointments, setting, insurances, EndoCase, endoCases } from "@modules";
+import { genderToString, Patient, PatientAppointmentsPanel, PatientAppointmentsPanelV2, PatientGalleryPanel, PatientPaymentPanel, patients, staff, appointments, setting, insurances, EndoCase, endoCases, } from "@modules";
 import { formatDate } from "@utils";
 import { computed, observable } from "mobx";
 import { observer } from "mobx-react";
-import { Icon, IconButton, Panel, PanelType, PersonaInitialsColor, TooltipHost, Dropdown, Dialog, DialogType, ChoiceGroup, DialogFooter, PrimaryButton, DefaultButton, TextField, Modal } from "office-ui-fabric-react";
+import { Icon, IconButton, Panel, PanelType, PersonaInitialsColor, TooltipHost, Dropdown, Dialog, DialogType, ChoiceGroup, DialogFooter, PrimaryButton, DefaultButton, TextField, Modal, } from "office-ui-fabric-react";
 import * as React from "react";
 import { EditableListComponent } from "common-components/editable-list/editable-list";
 import { format } from "date-fns";
@@ -18,11 +18,11 @@ let PatientsPage = class PatientsPage extends React.Component {
             dialog: {
                 open: false,
                 procedureId: "",
-                status: ""
+                status: "",
             },
             endodontic: {
                 open: false,
-                endoCaseId: ""
+                endoCaseId: "",
             },
             tableTabIndex: 0,
             showMoreProcedure: true,
@@ -30,17 +30,17 @@ let PatientsPage = class PatientsPage extends React.Component {
             selectedProcedureId: "",
             showMoreReports: true,
             addNewReport: false,
-            newReportValue: ""
+            newReportValue: "",
         };
         this.location = router.currentLocation.split("/");
         this.selectedId = this.location[1];
         this.viewWhich = this.location.length === 3 ? 5 : this.location[1] ? 1 : 0;
         this.getStaffByAppointment = (procedureId) => {
-            const foundAppointment = appointments.list.find(appointment => appointment.procedureId === procedureId);
+            const foundAppointment = appointments.list.find((appointment) => appointment.procedureId === procedureId);
             const staffName = [];
             if (foundAppointment && foundAppointment.staffID.length) {
-                foundAppointment.staffID.forEach(id => {
-                    const foundStaff = staff.list.find(s => s._id === id);
+                foundAppointment.staffID.forEach((id) => {
+                    const foundStaff = staff.list.find((s) => s._id === id);
                     if (foundStaff) {
                         staffName.push(foundStaff.name);
                     }
@@ -50,10 +50,10 @@ let PatientsPage = class PatientsPage extends React.Component {
         };
     }
     get selectedCase() {
-        return endoCases.list.find(endoCase => endoCase._id === this.state.endodontic.endoCaseId);
+        return endoCases.list.find((endoCase) => endoCase._id === this.state.endodontic.endoCaseId);
     }
     get patient() {
-        return patients.list.find(patient => patient._id === this.selectedId);
+        return patients.list.find((patient) => patient._id === this.selectedId);
     }
     get canEdit() {
         return user.currentUser.canEditPatients;
@@ -113,7 +113,7 @@ let PatientsPage = class PatientsPage extends React.Component {
                         isOpen: this.state.viewAppointment || this.state.endodontic.open, type: PanelType.medium, customWidth: "100%", closeButtonAriaLabel: "Close", isLightDismiss: true, onDismiss: () => {
                             this.setState({
                                 viewAppointment: false,
-                                endodontic: { open: false, procedureId: "" }
+                                endodontic: { open: false, procedureId: "" },
                             });
                         }, onRenderNavigation: () => {
                             return (React.createElement(Row, { className: "panel-heading" },
@@ -126,7 +126,7 @@ let PatientsPage = class PatientsPage extends React.Component {
                                     React.createElement(IconButton, { iconProps: { iconName: "cancel" }, onClick: () => {
                                             this.setState({
                                                 viewAppointment: false,
-                                                endodontic: { open: false, procedureId: "" }
+                                                endodontic: { open: false, procedureId: "" },
                                             });
                                         } }))));
                         } },
@@ -146,14 +146,14 @@ let PatientsPage = class PatientsPage extends React.Component {
                                     React.createElement(Row, { gutter: 12 },
                                         React.createElement(Col, { sm: 24 },
                                             React.createElement(TextField, { value: this.state.newReportValue, multiline: true, autoAdjustHeight: true, onChange: (ev, reportValue) => this.setState({
-                                                    newReportValue: reportValue
+                                                    newReportValue: reportValue,
                                                 }), style: { width: "95%", height: "500px" } }))),
                                     React.createElement(Row, { gutter: 12 },
                                         React.createElement("div", { style: { float: "right" } },
                                             React.createElement(DefaultButton, { text: "Cancel", onClick: () => {
                                                     this.setState({
                                                         addNewReport: false,
-                                                        newReportValue: ""
+                                                        newReportValue: "",
                                                     });
                                                 }, style: { "margin-right": "15px" } }),
                                             React.createElement(PrimaryButton, { text: "Save", onClick: () => {
@@ -161,26 +161,26 @@ let PatientsPage = class PatientsPage extends React.Component {
                                                     if (this.state.newReportValue !== "") {
                                                         const reports = [
                                                             ...this.patient.reports,
-                                                            this.state.newReportValue
+                                                            this.state.newReportValue,
                                                         ];
                                                         this.patient.reports = reports;
                                                         this.setState({
                                                             addNewReport: false,
-                                                            newReportValue: ""
+                                                            newReportValue: "",
                                                         });
                                                     }
                                                 } }))))))) : (React.createElement(DentalHistoryPanel, { toggleProcedureTable: () => this.setState({ tableTabIndex: 1 }), patient: this.patient })))),
                     React.createElement("div", { style: {
                             width: "100%",
                             borderTop: "1px solid #999",
-                            marginTop: "20px"
+                            marginTop: "20px",
                         } },
                         React.createElement("div", { className: "d-flex mt-3" },
                             React.createElement("p", { style: this.state.tableTabIndex === 0
                                     ? {
                                         color: "#2d89ef",
                                         padding: "10px",
-                                        cursor: "pointer"
+                                        cursor: "pointer",
                                     }
                                     : { padding: "10px", cursor: "pointer" }, onClick: () => {
                                     this.setState({ tableTabIndex: 0 });
@@ -189,7 +189,7 @@ let PatientsPage = class PatientsPage extends React.Component {
                                     ? {
                                         color: "#2d89ef",
                                         padding: "10px",
-                                        cursor: "pointer"
+                                        cursor: "pointer",
                                     }
                                     : { padding: "10px", cursor: "pointer" }, onClick: () => {
                                     this.setState({ tableTabIndex: 1 });
@@ -198,7 +198,7 @@ let PatientsPage = class PatientsPage extends React.Component {
                                     ? {
                                         color: "#2d89ef",
                                         padding: "10px",
-                                        cursor: "pointer"
+                                        cursor: "pointer",
                                     }
                                     : { padding: "10px", cursor: "pointer" }, onClick: () => {
                                     this.setState({ tableTabIndex: 2 });
@@ -209,55 +209,55 @@ let PatientsPage = class PatientsPage extends React.Component {
                                 text("Diagnosis"),
                                 text("Notes"),
                                 text("Date"),
-                                text("Delete")
+                                text("Delete"),
                             ], rows: this.patient.teeth
-                                .filter(t => t.diagnosis && t.diagnosis.id !== "")
+                                .filter((t) => t.diagnosis && t.diagnosis.id !== "")
                                 .map((t, index) => ({
                                 id: index + "tt",
                                 searchableString: t.diagnosis.value,
                                 cells: [
                                     {
                                         dataValue: t.ISO,
-                                        component: React.createElement("p", null, t.ISO)
+                                        component: React.createElement("p", null, t.ISO),
                                     },
                                     {
                                         dataValue: t.ISO,
-                                        component: React.createElement("p", null, t.Palmer)
+                                        component: React.createElement("p", null, t.Palmer),
                                     },
                                     {
                                         dataValue: t.diagnosis.id,
-                                        component: React.createElement("p", null, t.diagnosis.value)
+                                        component: React.createElement("p", null, t.diagnosis.value),
                                     },
                                     {
                                         dataValue: "note",
                                         component: (React.createElement(EditableListComponent, { label: text("History notes"), value: this.patient
                                                 ? this.patient.teeth[t.ISO].notes
-                                                : [], disabled: !this.canEdit, onChange: e => {
+                                                : [], disabled: !this.canEdit, onChange: (e) => {
                                                 if (this.patient) {
                                                     this.patient.teeth[t.ISO].notes = e;
                                                     this.patient.triggerUpdate++;
                                                 }
-                                            }, style: { width: "calc(100vw/4)" } }))
+                                            }, style: { width: "calc(100vw/4)" } })),
                                     },
                                     {
                                         dataValue: t.diagnosis.date.toString(),
-                                        component: (React.createElement("p", null, format(new Date(t.diagnosis.date), "dd/mm/yyyy")))
+                                        component: (React.createElement("p", null, format(new Date(t.diagnosis.date), "dd/mm/yyyy"))),
                                     },
                                     {
                                         dataValue: "delete",
                                         component: (React.createElement(IconButton, { className: "action-button delete", iconProps: {
-                                                iconName: "Trash"
+                                                iconName: "Trash",
                                             }, onClick: () => {
                                                 this.patient
                                                     ? (this.patient.teeth[t.ISO].diagnosis = {
                                                         id: "",
                                                         value: "",
-                                                        date: new Date()
+                                                        date: new Date(),
                                                     })
                                                     : null;
-                                            }, disabled: !this.canEdit }))
-                                    }
-                                ]
+                                            }, disabled: !this.canEdit })),
+                                    },
+                                ],
                             })) })),
                         this.state.tableTabIndex === 1 && (React.createElement(React.Fragment, null,
                             this.state.dialog.open && (React.createElement(Dialog, { hidden: !this.state.dialog.open, onDismiss: () => {
@@ -265,35 +265,35 @@ let PatientsPage = class PatientsPage extends React.Component {
                                         dialog: {
                                             open: false,
                                             procedureId: "",
-                                            status: ""
-                                        }
+                                            status: "",
+                                        },
                                     });
                                 }, dialogContentProps: {
                                     type: DialogType.largeHeader,
-                                    title: "Status of procedure"
+                                    title: "Status of procedure",
                                 } },
                                 React.createElement(ChoiceGroup, { selectedKey: this.state.dialog.status, options: [
                                         { key: "Completed", text: "Completed" },
                                         { key: "Not Completed", text: "Not Completed" },
                                         { key: "In Processing", text: "In Processing" },
                                         { key: "Delayed", text: "Delayed" },
-                                        { key: "Discontinued", text: "Discontinued" }
+                                        { key: "Discontinued", text: "Discontinued" },
                                     ], onChange: (key, value) => {
                                         this.setState({
-                                            dialog: Object.assign({}, this.state.dialog, { status: value.key.toString() })
+                                            dialog: Object.assign({}, this.state.dialog, { status: value.key.toString() }),
                                         });
                                     } }),
                                 React.createElement(DialogFooter, null,
                                     React.createElement(PrimaryButton, { disabled: !this.state.dialog.status, onClick: () => {
                                             const { procedures } = this.patient;
-                                            const newPro = procedures.map(procedure => {
+                                            const newPro = procedures.map((procedure) => {
                                                 if (this.state.dialog.procedureId ===
                                                     procedure.id) {
                                                     procedure.status = this.state.dialog.status;
                                                 }
                                                 return procedure;
                                             });
-                                            const i = appointments.list.findIndex(app => app.procedureId ===
+                                            const i = appointments.list.findIndex((app) => app.procedureId ===
                                                 this.state.dialog.procedureId);
                                             if (i > -1) {
                                                 appointments.list[i].status = this.state.dialog.status;
@@ -309,16 +309,16 @@ let PatientsPage = class PatientsPage extends React.Component {
                                                 dialog: {
                                                     open: false,
                                                     procedureId: "",
-                                                    status: ""
-                                                }
+                                                    status: "",
+                                                },
                                             });
                                         }, text: "Save" }),
                                     React.createElement(DefaultButton, { onClick: () => {
                                             this.setState({
                                                 dialog: {
                                                     open: false,
-                                                    procedureId: ""
-                                                }
+                                                    procedureId: "",
+                                                },
                                             });
                                         }, text: "Cancel" })))),
                             React.createElement(Table, { hover: true },
@@ -339,17 +339,17 @@ let PatientsPage = class PatientsPage extends React.Component {
                                         React.createElement("th", null, "Delete"))),
                                 React.createElement("tbody", null, procedureList.map((pro, index) => (React.createElement("tr", { key: index },
                                     React.createElement("td", null,
-                                        React.createElement("div", { style: { "display": "flex" } },
+                                        React.createElement("div", { style: { display: "flex" } },
                                             React.createElement(TooltipHost, { content: text("Change status") },
                                                 React.createElement(IconButton, { className: "action-button", iconProps: {
-                                                        iconName: "DietPlanNotebook"
+                                                        iconName: "DietPlanNotebook",
                                                     }, onClick: () => {
                                                         this.setState({
                                                             dialog: {
                                                                 open: true,
                                                                 procedureId: pro.id,
-                                                                status: pro.status
-                                                            }
+                                                                status: pro.status,
+                                                            },
                                                         });
                                                     } })),
                                             React.createElement(TooltipHost, { content: text("Add endo") },
@@ -358,14 +358,14 @@ let PatientsPage = class PatientsPage extends React.Component {
                                                             this.setState({
                                                                 endodontic: {
                                                                     open: true,
-                                                                    endoCaseId: pro.endoCaseId
-                                                                }
+                                                                    endoCaseId: pro.endoCaseId,
+                                                                },
                                                             });
                                                         }
                                                         else {
                                                             const orthoCase = new EndoCase();
                                                             const { procedures } = this.patient;
-                                                            const newPro = procedures.map(procedure => {
+                                                            const newPro = procedures.map((procedure) => {
                                                                 if (pro.id === procedure.id) {
                                                                     procedure.endoCaseId =
                                                                         orthoCase._id;
@@ -377,22 +377,22 @@ let PatientsPage = class PatientsPage extends React.Component {
                                                             this.setState({
                                                                 endodontic: {
                                                                     open: true,
-                                                                    endoCaseId: orthoCase._id
-                                                                }
+                                                                    endoCaseId: orthoCase._id,
+                                                                },
                                                             });
                                                         }
                                                     }, iconProps: {
-                                                        iconName: "link"
+                                                        iconName: "link",
                                                     } })))),
                                     React.createElement("td", null, pro.tooth.length > 0 &&
-                                        pro.tooth.map(t => `${t} `)),
-                                    React.createElement("td", null, pro.tooth.map(t => this.patient.teeth[t].Palmer)),
+                                        pro.tooth.map((t) => `${t} `)),
+                                    React.createElement("td", null, pro.tooth.map((t) => this.patient.teeth[t].Palmer)),
                                     React.createElement("td", null, new Date(pro.date).toLocaleString()),
                                     React.createElement("td", null, pro.name),
                                     React.createElement("td", null,
                                         React.createElement(TextField, { value: pro.surface, onChange: (e, value) => {
                                                 const { procedures } = this.patient;
-                                                const newPro = procedures.map(procedure => {
+                                                const newPro = procedures.map((procedure) => {
                                                     if (procedure.id === pro.id) {
                                                         procedure.surface = value;
                                                     }
@@ -404,12 +404,16 @@ let PatientsPage = class PatientsPage extends React.Component {
                                     React.createElement("td", null,
                                         React.createElement(EditableListComponent, { label: text("History notes"), value: this.patient
                                                 ? this.patient.teeth[pro.tooth[0]].notes
-                                                : [], disabled: !this.canEdit, onChange: e => {
+                                                : [], disabled: !this.canEdit, onChange: (e) => {
                                                 if (this.patient) {
                                                     this.patient.teeth[pro.tooth[0]].notes = e;
                                                     this.patient.triggerUpdate++;
                                                 }
-                                            }, style: { width: "calc(40vw/4)", "margin-top": "0px", "padding-right": "10px" } })),
+                                            }, style: {
+                                                width: "calc(40vw/4)",
+                                                "margin-top": "0px",
+                                                "padding-right": "10px",
+                                            } })),
                                     React.createElement("td", null,
                                         "x",
                                         pro.quantity),
@@ -417,28 +421,28 @@ let PatientsPage = class PatientsPage extends React.Component {
                                         "$",
                                         pro.quantity * pro.fees,
                                         ".00"),
-                                    React.createElement("td", null, this.getStaffByAppointment(pro.id).map(name => (React.createElement("div", null, name)))),
+                                    React.createElement("td", null, this.getStaffByAppointment(pro.id).map((name) => (React.createElement("div", null, name)))),
                                     React.createElement("td", null,
                                         React.createElement(TooltipHost, { content: text("Add Appointment") },
                                             React.createElement(IconButton, { className: "action-button", iconProps: {
-                                                    iconName: "Calendar"
+                                                    iconName: "Calendar",
                                                 }, onClick: () => {
                                                     this.setState({
                                                         viewAppointment: true,
-                                                        selectedProcedureId: pro.id
+                                                        selectedProcedureId: pro.id,
                                                     });
                                                     //  this.viewWhich = 4;
                                                 } }))),
                                     React.createElement("td", null,
                                         React.createElement(TooltipHost, { content: text("Delete Procedure") },
                                             React.createElement(IconButton, { className: "action-button delete", iconProps: {
-                                                    iconName: "Trash"
+                                                    iconName: "Trash",
                                                 }, onClick: () => {
-                                                    const procedures = this.patient.procedures.filter(patientPro => patientPro.id !== pro.id);
+                                                    const procedures = this.patient.procedures.filter((patientPro) => patientPro.id !== pro.id);
                                                     this.patient.procedures = procedures;
                                                 } })))))))),
                             procedureList && procedureList.length > 0 && (React.createElement("button", { className: "btn btn-secondary", onClick: () => this.setState({
-                                    showMoreProcedure: !this.state.showMoreProcedure
+                                    showMoreProcedure: !this.state.showMoreProcedure,
                                 }) }, this.state.showMoreProcedure
                                 ? "Load more"
                                 : "Load less")))),
@@ -462,20 +466,20 @@ let PatientsPage = class PatientsPage extends React.Component {
                                             React.createElement(Col, { sm: 24 }, report)),
                                         React.createElement("td", null,
                                             React.createElement(IconButton, { className: "action-button delete", iconProps: {
-                                                    iconName: "Trash"
-                                                }, onClick: event => {
+                                                    iconName: "Trash",
+                                                }, onClick: (event) => {
                                                     debugger;
                                                     const rowIndex = event.target.parentNode.parentNode
                                                         .parentNode.parentNode.rowIndex;
                                                     const reportsRows = [
-                                                        ...this.patient.reports
+                                                        ...this.patient.reports,
                                                     ];
                                                     reportsRows.reverse();
                                                     reportsRows.splice(rowIndex - 1, 1);
                                                     this.patient.reports = reportsRows;
                                                 } }))))))),
                                 reportsList && reportsList.length > 0 && (React.createElement("button", { className: "btn btn-secondary", onClick: () => this.setState({
-                                        showMoreReports: !this.state.showMoreReports
+                                        showMoreReports: !this.state.showMoreReports,
                                     }) }, this.state.showMoreReports
                                     ? "Load more"
                                     : "Load less")))))))) : (""),
@@ -487,8 +491,8 @@ let PatientsPage = class PatientsPage extends React.Component {
                     text("Last/Next Appointment"),
                     text("Total/Outstanding Payments"),
                     text("Insurance"),
-                    text("Label")
-                ], rows: patients.list.map(patient => ({
+                    text("Label"),
+                ], rows: patients.list.map((patient) => ({
                     id: patient._id,
                     searchableString: patient.searchableString,
                     cells: [
@@ -508,59 +512,76 @@ let PatientsPage = class PatientsPage extends React.Component {
                                 React.createElement("br", null),
                                 React.createElement(TooltipHost, { content: text("Patient Details") },
                                     React.createElement(IconButton, { className: "action-button", iconProps: {
-                                            iconName: "DietPlanNotebook"
+                                            iconName: "DietPlanNotebook",
                                         }, onClick: () => {
                                             this.selectedId = patient._id;
                                             this.viewWhich = 1;
                                         } })),
                                 React.createElement(TooltipHost, { content: text("Dental History") },
                                     React.createElement(IconButton, { className: "action-button", iconProps: {
-                                            iconName: "Teeth"
+                                            iconName: "Teeth",
                                         }, onClick: () => {
                                             this.selectedId = patient._id;
                                             this.viewWhich = 2;
                                         } })),
                                 React.createElement(TooltipHost, { content: text("Gallery and X-Rays") },
                                     React.createElement(IconButton, { className: "action-button", iconProps: {
-                                            iconName: "PhotoCollection"
+                                            iconName: "PhotoCollection",
                                         }, onClick: () => {
                                             this.selectedId = patient._id;
                                             this.viewWhich = 3;
                                         } })),
                                 user.currentUser.canViewAppointments ? (React.createElement(TooltipHost, { content: text("Patient Appointments") },
                                     React.createElement(IconButton, { className: "action-button", iconProps: {
-                                            iconName: "Calendar"
+                                            iconName: "Calendar",
                                         }, onClick: () => {
                                             this.selectedId = patient._id;
                                             this.viewWhich = 4;
                                         } }))) : (""),
                                 React.createElement(TooltipHost, { content: text("Financial") },
                                     React.createElement(IconButton, { className: "action-button", iconProps: {
-                                            iconName: "FinancialSolid"
+                                            iconName: "FinancialSolid",
                                         }, onClick: () => {
                                             this.selectedId = patient._id;
                                             this.viewWhich = 5;
                                         } })),
                                 React.createElement(TooltipHost, { content: text("Delete") },
                                     React.createElement(IconButton, { className: "action-button delete", iconProps: {
-                                            iconName: "Trash"
+                                            iconName: "Trash",
                                         }, onClick: () => patients.deleteModal(patient._id), disabled: !this.canEdit })),
-                                React.createElement("div", { style: { "position": "relative", "max-width": "32px", "left": "185px", "bottom": "90px" } },
-                                    React.createElement(TooltipHost, { id: "medical-history", content: React.createElement("div", { styles: { "padding": "10px" } },
+                                React.createElement("div", { style: {
+                                        position: "relative",
+                                        "max-width": "32px",
+                                        left: "185px",
+                                        bottom: "90px",
+                                    } },
+                                    React.createElement(TooltipHost, { id: "medical-history", content: React.createElement("div", { styles: { padding: "10px" } },
                                             React.createElement("div", null,
-                                                React.createElement("h6", { style: { "text-align": "center", "color": "#106ebe", "font-size": "12px", "font-weight": "600" } }, "Alerts"),
-                                                patient.alerts.trim() !== "" ?
-                                                    React.createElement("li", { style: { "font-size": "12px", color: "rgb(102, 102, 102)" } }, patient.alerts)
-                                                    : (React.createElement("p", { style: { "text-align": "center" } }, "No Data"))),
+                                                React.createElement("h6", { style: {
+                                                        "text-align": "center",
+                                                        color: "#106ebe",
+                                                        "font-size": "12px",
+                                                        "font-weight": "600",
+                                                    } }, "Alerts"),
+                                                patient.alerts.trim() !== "" ? (React.createElement("li", { style: {
+                                                        "font-size": "12px",
+                                                        color: "rgb(102, 102, 102)",
+                                                    } }, patient.alerts)) : (React.createElement("p", { style: { "text-align": "center" } }, "No Data"))),
                                             React.createElement("div", { style: { "margin-top": "10px" } },
-                                                React.createElement("h6", { style: { "text-align": "center", "color": "#106ebe", "font-size": "12px", "font-weight": "600" } }, "Allergies"),
-                                                patient.allergies.trim() !== "" ?
-                                                    React.createElement("li", { style: { "font-size": "12px", color: "rgb(102, 102, 102)" } }, patient.allergies)
-                                                    : (React.createElement("p", { style: { "text-align": "center" } }, "No Data")))) },
+                                                React.createElement("h6", { style: {
+                                                        "text-align": "center",
+                                                        color: "#106ebe",
+                                                        "font-size": "12px",
+                                                        "font-weight": "600",
+                                                    } }, "Allergies"),
+                                                patient.allergies.trim() !== "" ? (React.createElement("li", { style: {
+                                                        "font-size": "12px",
+                                                        color: "rgb(102, 102, 102)",
+                                                    } }, patient.allergies)) : (React.createElement("p", { style: { "text-align": "center" } }, "No Data")))) },
                                         React.createElement(IconButton, { className: "action-button", iconProps: {
-                                                iconName: "AddEvent"
-                                            }, style: { "border": "none" } }))))),
-                            className: "no-label"
+                                                iconName: "AddEvent",
+                                            }, style: { border: "none" } }))))),
+                            className: "no-label",
                         },
                         {
                             dataValue: (patient.lastAppointment ||
@@ -585,7 +606,7 @@ let PatientsPage = class PatientsPage extends React.Component {
                                         : text("No next appointment"), size: 3, onRenderInitials: () => React.createElement(Icon, { iconName: "Next" }), onClick: () => { }, initialsColor: patient.nextAppointment
                                         ? undefined
                                         : PersonaInitialsColor.transparent }))),
-                            className: "hidden-xs"
+                            className: "hidden-xs",
                         },
                         {
                             dataValue: patient.totalPayments,
@@ -607,14 +628,14 @@ let PatientsPage = class PatientsPage extends React.Component {
                                             : text("No outstanding amount"), size: 3, onRenderInitials: () => React.createElement(Icon, { iconName: "Cancel" }), onClick: () => { }, initialsColor: patient.differenceAmount !== 0
                                         ? PersonaInitialsColor.darkRed
                                         : PersonaInitialsColor.transparent }))),
-                            className: "hidden-xs"
+                            className: "hidden-xs",
                         },
                         {
                             dataValue: patient.insurance ? patient.insurance.name : "",
                             component: (React.createElement("div", null,
-                                React.createElement(Dropdown, { options: insurances.list.map(insurance => ({
+                                React.createElement(Dropdown, { options: insurances.list.map((insurance) => ({
                                         key: insurance._id,
-                                        text: insurance.name
+                                        text: insurance.name,
                                     })), selectedKey: patient.insurance ? patient.insurance._id : "", onChange: (e, value) => {
                                         const foundInsurance = insurances.list.find(({ _id }) => value.key === _id);
                                         const newPatient = patient;
@@ -622,16 +643,16 @@ let PatientsPage = class PatientsPage extends React.Component {
                                         const i = patients.findIndexByID(patient._id);
                                         patients.list[i] = newPatient;
                                     } }))),
-                            className: "hidden-xs"
+                            className: "hidden-xs",
                         },
                         {
-                            dataValue: patient.labels.map(x => x.text).join(","),
+                            dataValue: patient.labels.map((x) => x.text).join(","),
                             component: (React.createElement("div", null, patient.labels.map((label, index) => {
                                 return (React.createElement(TagComponent, { key: index, text: label.text, type: label.type }));
                             }))),
-                            className: "hidden-xs"
-                        }
-                    ]
+                            className: "hidden-xs",
+                        },
+                    ],
                 })), commands: this.canEdit
                     ? [
                         {
@@ -645,9 +666,20 @@ let PatientsPage = class PatientsPage extends React.Component {
                                 this.viewWhich = 1;
                             },
                             iconProps: {
-                                iconName: "Add"
-                            }
-                        }
+                                iconName: "Add",
+                            },
+                        },
+                        {
+                            key: "addImport",
+                            title: "Import Patients",
+                            name: text("Import Patients"),
+                            onClick: () => {
+                                this.inputElement.click();
+                            },
+                            iconProps: {
+                                iconName: "Edit",
+                            },
+                        },
                     ]
                     : [] })));
     }

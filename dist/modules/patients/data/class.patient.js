@@ -5,7 +5,7 @@ import { comparableTime, formatDate, generateID } from "@utils";
 import { computed, observable, observe } from "mobx";
 export const ProceduresDone = {
     done: "Yes",
-    notdone: "No"
+    notdone: "No",
 };
 export class Procedures {
     // @observable priority: number = 0;
@@ -114,6 +114,7 @@ export class Patient {
         this.address = "";
         this.email = "";
         this.phone = "";
+        this.whatsapphone = "";
         this.labels = [];
         this.medicalHistory = [];
         this.gallery = [];
@@ -138,7 +139,7 @@ export class Patient {
         let date = [
             d.getFullYear(),
             ("0" + (d.getMonth() + 1)).slice(-2),
-            ("0" + d.getDate()).slice(-2)
+            ("0" + d.getDate()).slice(-2),
         ].join("-");
         this.procedures[0] = new Procedures();
         if (json) {
@@ -159,16 +160,16 @@ export class Patient {
         return diff > this.birthYear ? this.birthYear : diff;
     }
     get appointments() {
-        return appointments.list.filter(appointment => appointment.patientID === this._id);
+        return appointments.list.filter((appointment) => appointment.patientID === this._id);
     }
     get lastAppointment() {
         return this.appointments
-            .filter(appointment => appointment.isDone === true)
+            .filter((appointment) => appointment.isDone === true)
             .sort((a, b) => b.date - a.date)[0];
     }
     get nextAppointment() {
         return this.appointments
-            .filter(appointment => {
+            .filter((appointment) => {
             if (appointment.isDone) {
                 return false;
             }
@@ -186,7 +187,7 @@ export class Patient {
     }
     get totalPayments() {
         return this.appointments
-            .map(x => x.paidAmount)
+            .map((x) => x.paidAmount)
             .reduce((t, c) => {
             t = t + c;
             return t;
@@ -194,7 +195,7 @@ export class Patient {
     }
     get outstandingAmount() {
         return this.appointments
-            .map(x => x.outstandingAmount)
+            .map((x) => x.outstandingAmount)
             .reduce((t, c) => {
             t = t + c;
             return t;
@@ -205,7 +206,7 @@ export class Patient {
         let totalProfit = 0;
         let totalPaid = 0;
         let totalRemaining = 0;
-        this.appointments.forEach(appointment => {
+        this.appointments.forEach((appointment) => {
             totalDues = totalDues + appointment.finalPrice;
             totalProfit = totalProfit + appointment.profit;
             totalPaid = totalPaid + appointment.paidAmount;
@@ -221,7 +222,7 @@ export class Patient {
     }
     get overpaidAmount() {
         return this.appointments
-            .map(x => x.overpaidAmount)
+            .map((x) => x.overpaidAmount)
             .reduce((t, c) => {
             t = t + c;
             return t;
@@ -235,9 +236,9 @@ export class Patient {
 			${this.age} ${this.birthYear}
 			${this.phone} ${this.email} ${this.address} ${genderToString(this.gender)}
 			${this.name} ${this.labels
-            .map(x => x.text)
+            .map((x) => x.text)
             .join(" ")} ${this.medicalHistory.join(" ")}
-			${this.teeth.map(x => x.notes.join(" ")).join(" ")}
+			${this.teeth.map((x) => x.notes.join(" ")).join(" ")}
 			${this.nextAppointment
             ? (this.nextAppointment.treatment || { type: "" }).type
             : ""}
@@ -268,7 +269,7 @@ export class Patient {
         this.allergies = json.allergies;
         this.cheifComplaint = json.cheifComplaint;
         this.orthoCaseId = json.orthoCaseId;
-        this.payments = json.payments.map(paymentObj => new Payment(paymentObj));
+        this.payments = json.payments.map((paymentObj) => new Payment(paymentObj));
         this.procedureGraphicCode = json.procedureGraphicCode;
         this.medicalHistory = Array.isArray(json.medicalHistory)
             ? json.medicalHistory
@@ -278,7 +279,7 @@ export class Patient {
         this.gallery = json.gallery || [];
         let i = 0;
         if (json.procedures) {
-            json.procedures.map(procedureObj => {
+            json.procedures.map((procedureObj) => {
                 if (procedureObj !== null) {
                     const proc = new Procedures(procedureObj);
                     this.procedures[i] = proc;
@@ -286,16 +287,16 @@ export class Patient {
                 i++;
             });
         }
-        json.teeth.map(toothObj => {
+        json.teeth.map((toothObj) => {
             if (toothObj) {
                 const tooth = new Tooth(toothObj);
                 this.teeth[tooth.ISO] = tooth;
             }
         });
-        this.labels = json.labels.map(x => {
+        this.labels = json.labels.map((x) => {
             return {
                 text: x.text,
-                type: stringToTagType(x.type)
+                type: stringToTagType(x.type),
             };
         });
         observe(this.medicalHistory, () => this.triggerUpdate++);
@@ -324,18 +325,18 @@ export class Patient {
             cheifComplaint: this.cheifComplaint,
             reports: this.reports,
             orthoCaseId: this.orthoCaseId,
-            procedureGraphicCode: Array.from(this.procedureGraphicCode.map(x => x)),
+            procedureGraphicCode: Array.from(this.procedureGraphicCode.map((x) => x)),
             medicalHistory: Array.from(this.medicalHistory),
             gallery: Array.from(this.gallery),
-            teeth: Array.from(this.teeth.map(x => x.toJSON())),
-            payments: Array.from(this.payments.map(x => x.toJSON())),
-            procedures: Array.from(this.procedures.map(x => x.toJSON())),
-            labels: Array.from(this.labels.map(x => {
+            teeth: Array.from(this.teeth.map((x) => x.toJSON())),
+            payments: Array.from(this.payments.map((x) => x.toJSON())),
+            procedures: Array.from(this.procedures.map((x) => x.toJSON())),
+            labels: Array.from(this.labels.map((x) => {
                 return {
                     text: x.text,
-                    type: TagTypeToString(x.type)
+                    type: TagTypeToString(x.type),
                 };
-            }))
+            })),
         };
     }
 }
@@ -363,6 +364,9 @@ tslib_1.__decorate([
 tslib_1.__decorate([
     observable
 ], Patient.prototype, "phone", void 0);
+tslib_1.__decorate([
+    observable
+], Patient.prototype, "whatsapphone", void 0);
 tslib_1.__decorate([
     observable
 ], Patient.prototype, "labels", void 0);

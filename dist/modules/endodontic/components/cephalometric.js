@@ -48,7 +48,7 @@ let CephalometricEditorPanel = class CephalometricEditorPanel extends React.Comp
                                 if (date) {
                                     this.props.item.date = new Date(date).getTime();
                                 }
-                            }, formatDate: d => formatDate(d || 0, setting.getSetting("date_format")) })),
+                            }, formatDate: d => formatDate(d || 0, setting.getSetting("date_format"), setting.getSetting("month_format")) })),
                     React.createElement(Col, { span: 2, className: "close" },
                         React.createElement(IconButton, { iconProps: { iconName: "cancel" }, onClick: () => {
                                 this.props.onDismiss();

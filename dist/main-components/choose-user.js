@@ -41,7 +41,7 @@ let ChooseUserComponent = class ChooseUserComponent extends React.Component {
             React.createElement("hr", null),
             staff.list.length === 0 ? (React.createElement("div", null,
                 React.createElement(TextField, { value: this.newDocName, onChange: (ev, v) => (this.newDocName = v), label: text("Register as new staff member") }),
-                React.createElement(TextField, { value: this.password, onChange: (ev, v) => (this.password = v), label: text("Enter Password for No-Server-Mode. (Please do not forgot this password!!)") }),
+                React.createElement(TextField, { value: this.password, onChange: (ev, v) => (this.password = v), label: text("Password") }),
                 React.createElement(PrimaryButton, { onClick: () => {
                         const newDoc = new StaffMember();
                         newDoc.name = this.newDocName;

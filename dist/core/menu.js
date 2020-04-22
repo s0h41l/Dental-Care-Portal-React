@@ -12,8 +12,8 @@ class MenuData {
                 url: "",
                 onClick: () => {
                     router.go([""]);
-                }
-            }
+                },
+            },
         ];
         this.visible = false;
     }
@@ -21,13 +21,13 @@ class MenuData {
         const items = this.items
             .slice()
             .reduce((arr, item) => {
-            if (arr.findIndex(x => x.key === item.key) === -1) {
+            if (arr.findIndex((x) => x.key === item.key) === -1) {
                 arr.push(item);
             }
             return arr;
         }, [])
             // .sort((a, b) => a.order - b.order)
-            .filter(item => !item.condition || item.condition());
+            .filter((item) => !item.condition || item.condition());
         items.push({
             icon: "message",
             name: "Contact us",
@@ -35,11 +35,23 @@ class MenuData {
             key: "contacts",
             url: "",
             onClick: () => {
-                var link = document.createElement('a');
+                var link = document.createElement("a");
                 link.href = "mailto:contact@365apex.com";
                 document.body.appendChild(link);
                 link.click();
-            }
+            },
+        }, {
+            icon: "consents",
+            name: "Consents",
+            order: -99,
+            key: "consents",
+            url: "",
+            onClick: () => {
+                var link = document.createElement("a");
+                link.href = "mailto:contact@365apex.com";
+                document.body.appendChild(link);
+                link.click();
+            },
         }, {
             icon: "help",
             name: "Support",
@@ -48,12 +60,12 @@ class MenuData {
             url: "",
             onClick: () => {
                 window.location.href = "https://www.365apex.com/support";
-            }
+            },
         });
         return items;
     }
     get currentIndex() {
-        return this.sortedItems.findIndex(x => x.name === router.currentNamespace);
+        return this.sortedItems.findIndex((x) => x.name === router.currentNamespace);
     }
     hide() {
         this.visible = false;

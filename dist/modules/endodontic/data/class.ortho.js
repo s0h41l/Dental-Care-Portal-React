@@ -30,12 +30,13 @@ export class EndoCase {
         /**
          * inputs
          */
-        this.workinglength = 0; //In mm
+        this.workinglen = []; //In mm
         this.canals = 1; //whole numbers
         /**
          * conclusions
          */
         this.problemsList = [];
+        this.problemsOther = "";
         this.treatmentPlan_appliance = [];
         this.orthoGallery = [];
         this.cephalometricHistory = [];
@@ -86,17 +87,17 @@ export class EndoCase {
 			${this.patient.teeth.map(x => x.notes.join(" ")).join(" ")}
 			${this.patient.nextAppointment
                 ? (this.patient.nextAppointment.treatment || { type: "" })
-                    .type
+                    .item
                 : ""}
 			${this.patient.nextAppointment
-                ? formatDate(this.patient.nextAppointment.date, setting.getSetting("date_format"))
+                ? formatDate(this.patient.nextAppointment.date, setting.getSetting("date_format"), setting.getSetting("month_format"))
                 : ""}
 			${this.patient.lastAppointment
                 ? (this.patient.lastAppointment.treatment || { type: "" })
-                    .type
+                    .item
                 : ""}
 			${this.patient.lastAppointment
-                ? formatDate(this.patient.lastAppointment.date, setting.getSetting("date_format"))
+                ? formatDate(this.patient.lastAppointment.date, setting.getSetting("date_format"), setting.getSetting("month_format"))
                 : ""}
 			${this.patient.differenceAmount < 0
                 ? "outstanding " + this.patient.outstandingAmount
@@ -115,8 +116,9 @@ export class EndoCase {
             access: this.access,
             cleaning: this.cleaning,
             obturation: this.obturation,
-            workinglength: this.workinglength,
+            workinglen: Array.from(this.workinglen),
             canals: this.canals,
+            problemsOther: this.problemsOther,
             problemsList: Array.from(this.problemsList),
             treatmentPlan_appliance: Array.from(this.treatmentPlan_appliance),
             orthoGallery: Array.from(this.orthoGallery),
@@ -134,8 +136,9 @@ export class EndoCase {
         this.access = json.access,
             this.cleaning = json.cleaning,
             this.obturation = json.obturation,
-            this.workinglength = json.workinglength,
+            this.workinglen = json.workinglen || [],
             this.canals = json.canals,
+            this.problemsOther = json.problemsOther,
             this.cephalometricHistory = json.cephalometricHistory || [];
         this.isFinished = !!json.isFinished;
         this.finishedDate = json.finishedDate || 0;
@@ -175,13 +178,16 @@ tslib_1.__decorate([
 ], EndoCase.prototype, "obturation", void 0);
 tslib_1.__decorate([
     observable
-], EndoCase.prototype, "workinglength", void 0);
+], EndoCase.prototype, "workinglen", void 0);
 tslib_1.__decorate([
     observable
 ], EndoCase.prototype, "canals", void 0);
 tslib_1.__decorate([
     observable
 ], EndoCase.prototype, "problemsList", void 0);
+tslib_1.__decorate([
+    observable
+], EndoCase.prototype, "problemsOther", void 0);
 tslib_1.__decorate([
     observable
 ], EndoCase.prototype, "treatmentPlan_appliance", void 0);

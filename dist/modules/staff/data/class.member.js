@@ -10,6 +10,7 @@ export class StaffMember {
         this.email = "";
         this.phone = "";
         this.operates = true;
+        this.canEditConsents = true;
         this.canEditStaff = true;
         this.canEditPatients = true;
         this.canEditOrtho = true;
@@ -215,6 +216,9 @@ tslib_1.__decorate([
 tslib_1.__decorate([
     observable
 ], StaffMember.prototype, "operates", void 0);
+tslib_1.__decorate([
+    observable
+], StaffMember.prototype, "canEditConsents", void 0);
 tslib_1.__decorate([
     observable
 ], StaffMember.prototype, "canEditStaff", void 0);

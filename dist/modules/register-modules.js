@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { registerAppointments, registerOrthodontic, registerEndodontic, registerPatients, registerPrescriptions, registerSettings, registerStaff, registerStats, registerTreatments, registerInsurance } from "@modules";
+import { registerAppointments, registerOrthodontic, registerEndodontic, registerPatients, registerPrescriptions, registerSettings, registerStaff, registerStats, registerTreatments, registerInsurance, registerConsents } from "@modules";
 const register = [
     registerAppointments,
     registerPatients,
@@ -10,7 +10,8 @@ const register = [
     registerStaff,
     registerOrthodontic,
     registerEndodontic,
-    registerInsurance
+    registerInsurance,
+    registerConsents
 ];
 let alreadyRegistered = false;
 export function registerModules() {

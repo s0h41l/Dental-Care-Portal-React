@@ -7,7 +7,7 @@ export const registerTreatments = {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             router.register({
                 namespace: treatmentsNamespace,
-                regex: /^treatments/,
+                regex: /^labs/,
                 component: () => tslib_1.__awaiter(this, void 0, void 0, function* () {
                     const Component = (yield import("./components/page.treatments"))
                         .Treatments;
@@ -30,6 +30,6 @@ export const registerTreatments = {
             return true;
         });
     },
-    order: 3
+    order: 8
 };
 //# sourceMappingURL=register.js.map
