@@ -8,7 +8,7 @@ import {
 	TagInputComponent,
 	TagType
 	} from "@common-components";
-import { text, user } from "@core";
+import { text, user, router } from "@core";
 import {
 	Appointment,
 	appointments,
@@ -21,7 +21,7 @@ import {
 	staff,
 	Treatment,
 	treatments,
-	patients
+	treatmentsNamespace
 	} from "@modules";
 import { convert, formatDate, num, round } from "@utils";
 import { computed, observable } from "mobx";
@@ -42,6 +42,70 @@ import {
 	} from "office-ui-fabric-react";
 import * as React from "react";
 
+				const TreatmentDiv = observer( ({ canEdit, appointment, treatmentOptions, index, title }) => ( 
+						<> 
+							<Col sm={11}>
+								<div className="appointment-input treatment">
+									<Dropdown
+										label={text(title[0])}
+										disabled={canEdit}
+										className="treatment-type"
+										selectedKey={
+											appointment.treatUnitGroup[index].treatment.split("|")[0]
+										}
+										options={
+											treatmentOptions
+											.sort((a: { item: string; }, b: { item: any; }) =>
+												a.item.localeCompare(b.item)
+											)
+											.map((tr: { _id: any; item: any; fees: any; }) => {
+												return {
+													key: tr._id,
+													text: tr.item + "||" + tr.fees													
+												};
+											})}
+										onChange={(e: any, newValue: any) => {											
+											appointment.treatUnitGroup[index].treatment = newValue!.key.toString() + "|" + newValue!.text.toString();
+											appointment.treatUnitGroup[index].fees = Number(newValue!.text.split("||")[1])
+											
+											console.log("Appointment Treatment: "+ appointment.treatUnitGroup[index].treatment)
+											console.log("Appointment Fees: "+ appointment.treatUnitGroup[index].fees)
+										}}
+									/>
+								</div>
+							</Col>
+							<Col sm={11}>
+								<div className="appointment-input units-number">
+									<TextField
+										label={text(title[1])}
+										disabled={canEdit}
+										type="number"
+										value={appointment.treatUnitGroup[index].unit.toString()}
+										onChange={(e, newValue) => {
+											appointment.treatUnitGroup[index].unit  = Number(
+												newValue!
+											);
+											console.log("Appointment Unit: "+ appointment.treatUnitGroup[index].unit)
+										}}
+									/>
+								</div>
+							</Col>
+							<Col sm={2}> 
+									<div className="appointment-input units-number">
+												<IconButton
+													className="delete-button"
+													iconProps={{
+														iconName: "delete"
+													}}
+													onClick={() => {
+														appointment.treatUnitGroup.splice(index, 1)
+													}}
+												/>
+									</div>
+							</Col>
+						</>
+				) );
+
 @observer
 export class AppointmentEditorPanel extends React.Component<
 	{
@@ -51,23 +115,9 @@ export class AppointmentEditorPanel extends React.Component<
 	},
 	{}
 > {
-
-	@computed 
-	get patient(){
-		return patients.list.find(p => (p._id === this.props.appointment.patientID));
-	}
-
-	@computed 
-	get patientInsurance(){
-		const { appointment } = this.props;
-		const patient = patients.list.find((patientDetails) => appointment && patientDetails._id === appointment.patientID)
-		if (patient){
-			return patient.insurance;
-		}
-		return null
-	}
-
 	@observable timerInputs: number[] = [];
+
+	@observable viewTreatment: boolean = false;
 
 	@observable timeComb: {
 		hours: number;
@@ -119,9 +169,10 @@ export class AppointmentEditorPanel extends React.Component<
 		) {
 			const arr = this.props.appointment.treatmentID.split("|");
 			const _id = this.props.appointment.treatmentID;
+			
 			const type = arr[0];
 			const expenses = num(arr[1]);
-			list.push(new Treatment({ _id, expenses, type }));
+			list.push(new Treatment());
 		}
 		return list;
 	}
@@ -150,7 +201,10 @@ export class AppointmentEditorPanel extends React.Component<
 	}
 
 	render() {
-		const insurance = this.patientInsurance;
+		if (this.props.appointment){
+			console.log("Treatment group:"+this.props.appointment!.treatUnitGroup.length);
+		}
+
 		return this.props.appointment ? (
 			<Panel
 				isOpen={!!this.props.appointment}
@@ -158,7 +212,9 @@ export class AppointmentEditorPanel extends React.Component<
 				closeButtonAriaLabel="Close"
 				isLightDismiss={true}
 				onDismiss={this.props.onDismiss}
-				onRenderNavigation={() => (
+				onRenderNavigation={() => { 
+				
+					return (
 					<Row className="panel-heading">
 						<Col span={22}>
 							<ProfileComponent
@@ -166,13 +222,14 @@ export class AppointmentEditorPanel extends React.Component<
 									<span>
 										{formatDate(
 											this.props.appointment!.date,
-											setting.getSetting("date_format")
+											setting.getSetting("date_format"),
+											setting.getSetting("month_format")
 										)}{" "}
 										/{" "}
 										{this.props.appointment
 											? this.props.appointment.treatment
 												? this.props.appointment
-														.treatment.type
+														.treatment.item
 												: ""
 											: ""}
 									</span>
@@ -196,8 +253,10 @@ export class AppointmentEditorPanel extends React.Component<
 							/>
 						</Col>
 					</Row>
-				)}
+				)}}
 			>
+			
+			
 				<div className="appointment-editor">
 					<SectionComponent title={text("Appointment")}>
 						<Row gutter={12}>
@@ -225,7 +284,8 @@ export class AppointmentEditorPanel extends React.Component<
 												d || 0,
 												setting.getSetting(
 													"date_format"
-												)
+												),
+												setting.getSetting("month_format")
 											)
 										}
 									/>
@@ -393,47 +453,8 @@ export class AppointmentEditorPanel extends React.Component<
 							}}
 						/>
 						<br />
+					
 						<Row gutter={12}>
-							<Col sm={12}>
-								<div className="appointment-input treatment">
-									<Dropdown
-										label={text("Treatment")}
-										disabled={!this.canEdit}
-										className="treatment-type"
-										selectedKey={
-											this.props.appointment!.treatmentID
-										}
-										options={this.treatmentOptions
-											.sort((a, b) =>
-												a.type.localeCompare(b.type)
-											)
-											.map(tr => {
-												return {
-													key: tr._id,
-													text: tr.type
-												};
-											})}
-										onChange={(e, newValue) => {
-											this.props.appointment!.treatmentID = newValue!.key.toString();
-										}}
-									/>
-								</div>
-							</Col>
-							<Col sm={12}>
-								<div className="appointment-input units-number">
-									<TextField
-										label={text("Units number")}
-										disabled={!this.canEdit}
-										type="number"
-										value={this.props.appointment!.units.toString()}
-										onChange={(e, newValue) => {
-											this.props.appointment!.units = num(
-												newValue!
-											);
-										}}
-									/>
-								</div>
-							</Col>
 							<Col span={24}>
 								{" "}
 								<div className="appointment-input involved-teeth">
@@ -466,6 +487,40 @@ export class AppointmentEditorPanel extends React.Component<
 									/>
 								</div>
 							</Col>
+
+							<DefaultButton text="Add Lab Order" allowDisabledFocus onClick={ 
+							e => {
+								var ddoi = { treatment: '', unit: 0, fees: 0 }
+								this.props.appointment!.treatUnitGroup.push(ddoi)
+							}
+							} /> &nbsp;&nbsp;&nbsp;&nbsp;
+
+							<DefaultButton text="Create Lab Order" allowDisabledFocus onClick={ 
+								e => {
+									router.go([treatmentsNamespace]);
+								}
+							} />
+							<br/> <br/>
+
+							{this.props.appointment!.treatUnitGroup && this.props.appointment!.treatUnitGroup.map(
+										(item,i) => {
+										if (i <= 0){
+											var title = ['Treatment ID', "Unit Number"]
+											return ( 
+							
+							<TreatmentDiv key={i} index={i} appointment={this.props.appointment!} treatmentOptions = {this.treatmentOptions} canEdit = {!this.canEdit} title={title} />
+										
+										) } else {
+											var title = ['', ""]
+											return ( 
+							
+							<TreatmentDiv key={i} index={i} appointment={this.props.appointment!} treatmentOptions = {this.treatmentOptions} canEdit = {!this.canEdit} title={title} />
+															
+													) 
+										} 
+										
+										} )}
+											
 						</Row>
 
 						{setting.getSetting("module_prescriptions") ? (
@@ -749,12 +804,12 @@ export class AppointmentEditorPanel extends React.Component<
 												type="number"
 												disabled={!this.canEdit}
 												label={text("Price")}
-												value={this.props.appointment!.finalPrice.toString()}
+												value={this.props.appointment!.finalPrice.toString()}	
 												onChange={(e, newVal) => {
 													this.props.appointment!.finalPrice = num(
 														newVal!
 													);
-												}}
+												}}										
 												prefix={setting.getSetting(
 													"currencySymbol"
 												)}
@@ -806,34 +861,6 @@ export class AppointmentEditorPanel extends React.Component<
 											/>
 										</Col>
 									</Row>
-									<Row gutter={12}>
-										<Col sm={8} >
-											<TextField 
-												type = "number" 
-												disabled = {!this.canEdit} 
-												label={text('Discount')} 
-												value ={this.props.appointment!.discount.toString()}
-												onChange = {(e, newVal) => {
-													this.props.appointment!.discount = num(newVal!)
-												}}
-												prefix={"%"}
-											/>
-										</Col>
-										{insurance && <Col sm={8}>
-											<TextField
-												type="number"
-												disabled={true}
-												label={text(`Insurance : ${insurance.name}`)}
-												value={insurance.discount.toString()}
-												onChange={(e, newVal) => {
-													this.props.appointment!.paidAmount = num(
-														newVal!
-													);
-												}}
-												prefix={"%"}
-											/>
-										</Col>}
-									</Row>
 									<p className="payment-insight">
 										<TagComponent
 											text={
@@ -868,35 +895,15 @@ export class AppointmentEditorPanel extends React.Component<
 						</Row>
 						<Row gutter={12}>
 							<Col sm={24}>
-								<Dropdown 
-									label={text("Status")}
-									options={[
-										"Completed",
-										"Not Completed",
-										"In Processing",
-										"Delayed",
-										"Discontinued"
-									].map(x => ({
-										key: x.toString(),
-										text: x.toString()
-									}))}
-									selectedKey={this.props.appointment!.status}
-									onChange={(ev, val) => {
-										if (val.key.toString() === 'Completed'){
-											this.props.appointment!.isDone = true
-										}else{
-											this.props.appointment!.isDone = false
-										}
-										if (this.patient && this.patient.procedures) {											
-											const newPro: any = this.patient.procedures.map(pro => {
-												if (pro.id === this.props.appointment.procedureId){
-													pro.status = val.key.toString();
-												}
-												return pro
-											});
-											this.patient.procedures = newPro;
-										}
-										this.props.appointment!.status = val.key.toString();
+								<Toggle
+									defaultChecked={
+										this.props.appointment!.isDone
+									}
+									onText={text("Done")}
+									offText={text("Not done")}
+									disabled={!this.canEdit}
+									onChange={(e, newVal) => {
+										this.props.appointment!.isDone = newVal!;
 									}}
 								/>
 							</Col>
@@ -904,7 +911,7 @@ export class AppointmentEditorPanel extends React.Component<
 					</SectionComponent>
 
 					<br />
-
+								
 					{this.canEdit ? (
 						<PrimaryButton
 							className="delete"

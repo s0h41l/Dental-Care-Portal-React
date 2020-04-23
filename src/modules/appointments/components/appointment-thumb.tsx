@@ -73,13 +73,12 @@ export class AppointmentThumbComponent extends React.Component<
 				<div className="m-b-5">
 					<ProfileSquaredComponent
 						text={
-							this.props.appointment.treatment
-								? this.props.appointment.treatment.type
-								: ""
+							""
 						}
 						subText={formatDate(
 							this.props.appointment.date,
-							setting.getSetting("date_format")
+							setting.getSetting("date_format"),
+							setting.getSetting("month_format")
 						)}
 						size={3}
 					/>

@@ -34,7 +34,8 @@ export class DateLinkComponent extends React.Component<Props, {}> {
 					</span>
 					{formatDate(
 						this.props.time,
-						setting.getSetting("date_format")
+						setting.getSetting("date_format"),
+						setting.getSetting("month_format")
 					)}
 				</a>
 			</div>
