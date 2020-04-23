@@ -33,7 +33,32 @@ export function isTomorrow(timestamp: number) {
 	);
 }
 
-export function formatDate(d: Date | number | undefined, dateFormat: string) {
+// export function formatDate(d: Date | number | undefined, dateFormat: string) {
+// 	if (typeof d === "number") {
+// 		d = new Date(d);
+// 	}
+
+// 	if (typeof d === "undefined") {
+// 		d = new Date(0);
+// 	}
+
+// 	if (dateFormat === "dd/mm/yyyy") {
+// 		return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+// 	} else if (dateFormat === "mm/dd/yyyy") {
+// 		return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+// 	} else {
+// 		return `${d!.getDate()} ${
+// 			dateNames.monthsShort()[d!.getMonth()]
+// 		}'${d!.getFullYear() - 2000}`;
+// 	}
+// }
+
+export function formatDate(d: Date | number | undefined, dateFormat: string, monthFormat?: string) {
+	function writeHijri(date: Date | number) {
+		return new Intl.DateTimeFormat('en-TN-u-ca-islamic', {day: 'numeric', month: 'numeric' ,year : 'numeric'}).format(date);
+		//month - 0, day - 1, year - 2
+	}
+
 	if (typeof d === "number") {
 		d = new Date(d);
 	}
@@ -42,9 +67,39 @@ export function formatDate(d: Date | number | undefined, dateFormat: string) {
 		d = new Date(0);
 	}
 
-	if (dateFormat === "dd/mm/yyyy") {
+	let asdates = [ "كانون الثاني", "شباط", "آذار", "نيسان", "أيار", "حزيران", 
+	"تموز", "آب", "أيلول", "تشرين الأول", "تشرين الثاني", "كانون الأول" ]
+
+	let isdates = [ "شهر كانون الثاني", "شباط شهر", "آذار", "نيسان", "أيار", "حزيران", 
+	"تموز", "آب", "أيلول", "تشرين الأول", "تشرين الثاني", "كانون الأول" ]
+
+	if (dateFormat === "dd/mm/yyyy" && monthFormat === 'ge') {
 		return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-	} else if (dateFormat === "mm/dd/yyyy") {
+	}
+	else if (dateFormat === "dd/mm/yyyy" && monthFormat === 'as') {
+		return `${d.getDate()}/${d.getFullYear()}/${asdates[d.getMonth()]}`;
+	}
+	else if (dateFormat === "dd/mm/yyyy" && monthFormat === 'is') {		
+		var ddate = writeHijri(d).split('/');
+		var month = ddate[0]; var day = ddate[1]; var year = ddate[2];
+		return `${day}/${isdates[d.getMonth()]}/${year}`;
+	} 
+	else if (dateFormat === "dd/mm/yyyy") {
+		return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+	} 
+
+	else if (dateFormat === "mm/dd/yyyy" && monthFormat === 'ge') {
+		return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+	}
+	else if (dateFormat === "mm/dd/yyyy" && monthFormat === 'as') {		
+		return `${asdates[d.getMonth()]}/${d.getDate()}/${d.getFullYear()}`;
+	}
+	else if (dateFormat === "mm/dd/yyyy" && monthFormat === 'is') {		
+		var ddate = writeHijri(d).split('/');
+		var month = ddate[0]; var day = ddate[1]; var year = ddate[2];
+		return `${isdates[d.getMonth()]}/${day}/${year}`;
+	} 
+	else if (dateFormat === "mm/dd/yyyy") {
 		return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
 	} else {
 		return `${d!.getDate()} ${

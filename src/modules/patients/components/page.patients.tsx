@@ -992,7 +992,9 @@ export class PatientsPage extends React.Component<{}, {}> {
           maxItemsOnLoad={10}
           className={"patients-data-table"}
           heads={[
+            text("ID"),
             text("Patient"),
+            text("Contact"),
             text("Last/Next Appointment"),
             text("Total/Outstanding Payments"),
             text("Insurance"),
@@ -1002,6 +1004,24 @@ export class PatientsPage extends React.Component<{}, {}> {
             id: patient._id,
             searchableString: patient.searchableString,
             cells: [
+              {
+                dataValue: patient.datex,
+                component: (
+                  <div>
+                    <label>#{patient._id} </label>
+                    <br></br> <br></br>
+                    <label>
+                      {" "}
+                      {formatDate(
+                        new Date(),
+                        setting.getSetting("date_format"),
+                        setting.getSetting("month_format")
+                      )}
+                    </label>
+                  </div>
+                ),
+                className: "no-label",
+              },
               {
                 dataValue:
                   patient.name +

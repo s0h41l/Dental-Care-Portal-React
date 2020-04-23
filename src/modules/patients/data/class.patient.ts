@@ -152,6 +152,8 @@ export class Patient {
 
   @observable diagnosis: Diagnosis[] = [];
 
+  @observable datex: string = Date.now().toString();
+
   @observable procedures: Procedures[] = [];
 
   @observable payments: Payment[] = [];
