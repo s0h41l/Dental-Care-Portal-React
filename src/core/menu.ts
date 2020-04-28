@@ -74,7 +74,8 @@ class MenuData {
         key: "support",
         url: "",
         onClick: () => {
-          window.location.href = "https://www.365apex.com/support";
+          //window.location.href = "https://www.365apex.com/support";
+          window.open('https://www.365apex.com/support', '_blank');
         },
       }
     );
