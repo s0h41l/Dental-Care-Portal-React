@@ -61,10 +61,11 @@ class MenuData {
         key: "consents",
         url: "",
         onClick: () => {
-          var link = document.createElement("a");
-          link.href = "mailto:contact@365apex.com";
-          document.body.appendChild(link);
-          link.click();
+          window.open("https://www.365apex.com/support", "_blank");
+          // var link = document.createElement("a");
+          // link.href = "mailto:contact@365apex.com";
+          // document.body.appendChild(link);
+          // link.click();
         },
       },
       {
@@ -75,7 +76,7 @@ class MenuData {
         url: "",
         onClick: () => {
           //window.location.href = "https://www.365apex.com/support";
-          window.open('https://www.365apex.com/support', '_blank');
+          window.open("https://www.365apex.com/support", "_blank");
         },
       }
     );

@@ -30,5 +30,5 @@ export const registerStaff = {
 		);
 		return true;
 	},
-	order: 7
+	order: 3
 };

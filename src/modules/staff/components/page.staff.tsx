@@ -22,12 +22,30 @@ import {
 	PersonaInitialsColor,
 	TextField,
 	Toggle,
-	TooltipHost
+	TooltipHost,
+	Dropdown,
+	DefaultButton, 
+	PrimaryButton,
+	Dialog,
+	DialogFooter
 	} from "office-ui-fabric-react";
 import * as React from "react";
 
+import { Widget as Chat, toggleWidget, addResponseMessage } from 'react-chat-widget';
+
+
 @observer
-export class StaffPage extends React.Component<{}, {}> {
+export class StaffPage extends React.Component<{}, {isChatOpen: any, selectedUserForChat: String, smsDialog: any, showMessageNotification: Boolean, chatTabActivated: Boolean}> {
+	constructor(props: {}) {
+		super(props);
+		this.state = {
+			isChatOpen: false,
+			selectedUserForChat: "",
+			smsDialog: false,
+			showMessageNotification: false,
+			chatTabActivated: false
+		}
+	}
 	@observable selectedId: string = router.currentLocation.split("/")[1];
 	@observable viewWhich: number = 1;
 
@@ -45,7 +63,17 @@ export class StaffPage extends React.Component<{}, {}> {
 		return staff.list[this.selectedMemberIndex];
 	}
 
+	@computed
+	get users() {
+		return staff.list;
+	}
+
+	closeSmsDialog = () => {
+		this.setState({ smsDialog: false });
+	}
+
 	render() {
+		let options = { dentist: 'dentist', secretary: 'secretary', employee: 'employee' };
 		return (
 			<div className="staff-component p-15 p-l-10 p-r-10">
 				<Row gutter={16}>
@@ -143,6 +171,33 @@ export class StaffPage extends React.Component<{}, {}> {
 												) : (
 													""
 												)}
+
+												<TooltipHost
+													content={text("SMS")}
+												>
+													<IconButton
+														className="action-button"
+														iconProps={{
+															iconName: "Mail"
+														}}
+														onClick={() => this.setState({ smsDialog: true })}
+													/>
+												</TooltipHost>
+
+												<TooltipHost
+													content={text("Chat")}
+												>
+													<IconButton
+														className="action-button"
+														iconProps={{
+															iconName: "Comment"
+														}}
+														onClick={() =>
+														toggleWidget()
+														}
+													/>
+												</TooltipHost>
+
 												<TooltipHost
 													content={text("Delete")}
 												>
@@ -181,7 +236,7 @@ export class StaffPage extends React.Component<{}, {}> {
 																? member
 																		.lastAppointment
 																		.treatment
-																		.type
+																		.item
 																: ""
 															: ""
 													}
@@ -193,7 +248,8 @@ export class StaffPage extends React.Component<{}, {}> {
 																		.date,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 															  )
 															: text(
 																	"No last appointment"
@@ -220,7 +276,7 @@ export class StaffPage extends React.Component<{}, {}> {
 																? member
 																		.nextAppointment
 																		.treatment
-																		.type
+																		.item
 																: ""
 															: ""
 													}
@@ -232,7 +288,8 @@ export class StaffPage extends React.Component<{}, {}> {
 																		.date,
 																	setting.getSetting(
 																		"date_format"
-																	)
+																	),
+																	setting.getSetting("month_format")
 															  )
 															: text(
 																	"No next appointment"
@@ -446,6 +503,36 @@ export class StaffPage extends React.Component<{}, {}> {
 										title={text(`Basic Info`)}
 									>
 										<div className="staff-input">
+											<label>
+												{text("Job")}
+											</label>
+											<Dropdown
+												disabled={!this.canEdit}
+												placeholder={text("Job")}
+												options={Object.keys(options).map(x => ({
+													key: x,
+													text: text((options as any)[x])
+												}))}
+												defaultSelectedKey={this.member.typex}
+												onChange={(ev, has: any) => {
+													(this.member.typex = has.key!)
+												}}
+											/>
+										</div>
+
+										<div className="staff-input">
+											<TextField
+													multiline
+													disabled={!this.canEdit}
+													label={text("Speciality")}
+													value={this.member.speciality}
+													onChange={(e, value) => {
+														this.member.speciality = value!;
+													}}
+												/>
+										</div>
+									
+										<div className="staff-input">
 											<TextField
 												label={text("Name")}
 												value={this.member.name}
@@ -502,6 +589,19 @@ export class StaffPage extends React.Component<{}, {}> {
 													);
 												})}
 										</div>
+
+										<div className="staff-input">
+											<TextField
+													multiline
+													disabled={!this.canEdit}
+													label={text("Notes")}
+													value={this.member.notes}
+													onChange={(e, value) => {
+														this.member.notes = value!;
+													}}
+												/>
+										</div>
+
 									</SectionComponent>
 
 									<SectionComponent
@@ -705,10 +805,10 @@ export class StaffPage extends React.Component<{}, {}> {
 												user.currentUser._id
 											}
 											onText={text(
-												"Can view treatments page"
+												"Can view Lab Order page"
 											)}
 											offText={text(
-												"Can not view treatments page"
+												"Can not view Lab Order page"
 											)}
 											onChange={(ev, newVal) => {
 												this.member.canViewTreatments = newVal!;
@@ -888,10 +988,10 @@ export class StaffPage extends React.Component<{}, {}> {
 													user.currentUser._id
 												}
 												onText={text(
-													"Can edit treatments page"
+													"Can edit Lab Order page"
 												)}
 												offText={text(
-													"Can not edit treatments page"
+													"Can not edit Lab Order page"
 												)}
 												onChange={(ev, newVal) => {
 													this.member.canEditTreatments = newVal!;
@@ -977,11 +1077,46 @@ export class StaffPage extends React.Component<{}, {}> {
 							) : (
 								""
 							)}
+
 						</div>
 					</Panel>
 				) : (
 					""
 				)}
+
+				<Dialog
+					hidden={!this.state.smsDialog}
+					onDismiss={this.closeSmsDialog}
+					modalProps={{
+						isBlocking: true,
+						topOffsetFixed: true
+					}}
+					>
+					
+					<Dropdown
+						label={text("Select User")}
+						options={this.users.map(x => ({
+							key: x.name,
+							text: text(x.name)
+						}))}
+					/>
+						<TextField
+							label="Message"
+							value={setting.getSetting(
+								"message_body"
+							)}
+							// onChange={(ev, v) => {
+							// 	this.props.orthoCase.canals = num(v!);
+							// }}
+							multiline
+							rows={5}
+							/>
+						<DialogFooter>
+							<PrimaryButton onClick={this.closeSmsDialog} text="Send" />
+							<DefaultButton onClick={this.closeSmsDialog} text="Cancel" />
+						</DialogFooter>
+					</Dialog>
+
 			</div>
 		);
 	}

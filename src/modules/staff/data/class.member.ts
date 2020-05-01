@@ -9,13 +9,19 @@ export class StaffMember {
 
 	@observable name: string = "";
 
+	@observable noServerPass: string = "";
+
+	@observable typex: string = "";
+
+	@observable speciality: string = "";
+
+	@observable notes: string = "";
+
 	@observable email: string = "";
 
 	@observable phone: string = "";
 
 	@observable operates: boolean = true;
-
-	@observable canEditConsents: boolean = true;
 
 	@observable canEditStaff: boolean = true;
 	@observable canEditPatients: boolean = true;
@@ -27,14 +33,14 @@ export class StaffMember {
 
 	@observable canViewStaff: boolean = true;
 	@observable canViewPatients: boolean = true;
-	@observable canViewInsurance: boolean = true;
-	@observable canEditInsurance: boolean = true;
 	@observable canViewOrtho: boolean = true;
 	@observable canViewAppointments: boolean = true;
 	@observable canViewTreatments: boolean = true;
 	@observable canViewPrescriptions: boolean = true;
 	@observable canViewSettings: boolean = true;
 	@observable canViewStats: boolean = true;
+
+	@observable canEditConsents: boolean = true;
 
 	@observable pin: string | undefined = "";
 
@@ -102,30 +108,31 @@ export class StaffMember {
 			${this.name} ${this.onDutyDays.join(" ")}
 			${this.phone} ${this.email}
 			${
-			this.nextAppointment
-				? (this.nextAppointment.treatment || { type: "" }).type
-				: ""
+				this.nextAppointment
+					? (this.nextAppointment.treatment || { type: "" }).item
+					: ""
 			}
 			${
-			this.nextAppointment
-				? formatDate(
-					this.nextAppointment.date,
-					setting.getSetting("date_format")
-				)
-				: ""
+				this.nextAppointment
+					? formatDate(
+							this.nextAppointment.date,
+							setting.getSetting("date_format")
+					  )
+					: ""
 			}
 			${
-			this.lastAppointment
-				? (this.lastAppointment.treatment || { type: "" }).type
-				: ""
+				this.lastAppointment
+					? (this.lastAppointment.treatment || { type: "" }).item
+					: ""
 			}
 			${
-			this.lastAppointment
-				? formatDate(
-					this.lastAppointment.date,
-					setting.getSetting("date_format")
-				)
-				: ""
+				this.lastAppointment
+					? formatDate(
+							this.lastAppointment.date,
+							setting.getSetting("date_format"),
+							setting.getSetting("month_format")
+					  )
+					: ""
 			}
 		`.toLowerCase();
 	}
@@ -166,8 +173,12 @@ export class StaffMember {
 		return {
 			_id: this._id,
 			name: this.name,
+			noServerPass: this.noServerPass,
 			email: this.email,
 			phone: this.phone,
+			typex: this.typex,
+			speciality: this.speciality,
+			notes: this.notes,
 			operates: this.operates,
 			onDutyDays: Array.from(this.onDutyDays),
 			canEditStaff: this.canEditStaff,
@@ -175,18 +186,17 @@ export class StaffMember {
 			canEditOrtho: this.canEditOrtho,
 			canEditAppointments: this.canEditAppointments,
 			canEditTreatments: this.canEditTreatments,
-			canEditInsurance: this.canEditInsurance,
 			canEditPrescriptions: this.canEditPrescriptions,
 			canEditSettings: this.canEditSettings,
 			canViewStaff: this.canViewStaff,
 			canViewPatients: this.canViewPatients,
-			canViewInsurance: this.canViewInsurance,
 			canViewOrtho: this.canViewOrtho,
 			canViewAppointments: this.canViewAppointments,
 			canViewTreatments: this.canViewTreatments,
 			canViewPrescriptions: this.canViewPrescriptions,
 			canViewSettings: this.canViewSettings,
 			canViewStats: this.canViewStats,
+			canEditConsents: this.canEditConsents,
 			pin: this.pin
 		};
 	}
@@ -194,8 +204,12 @@ export class StaffMember {
 	fromJSON(json: StaffMemberJSON) {
 		this._id = json._id;
 		this.name = json.name || "";
+		this.noServerPass = json.noServerPass || ""
 		this.email = json.email || "";
 		this.phone = json.phone || "";
+		this.typex = json.typex || "";
+		this.speciality = json.speciality || "";
+		this.notes = json.notes || "";
 		this.pin = json.pin;
 		this.operates =
 			typeof json.operates === "boolean" ? json.operates : true;
@@ -250,10 +264,7 @@ export class StaffMember {
 				: true;
 		this.canViewStats =
 			typeof json.canViewStats === "boolean" ? json.canViewStats : true;
-		this.canViewInsurance =
-			typeof json.canViewInsurance === "boolean" ? json.canViewInsurance : true;
-		this.canEditInsurance =
-			typeof json.canEditInsurance === "boolean" ? json.canEditInsurance : true;
+		this.canEditConsents = typeof json.canEditConsents === "boolean" ? json.canEditConsents : true;
 	}
 
 	constructor(json?: StaffMemberJSON) {
