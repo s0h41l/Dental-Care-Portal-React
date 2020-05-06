@@ -1,185 +1,207 @@
 import {
-	AppointmentJSON,
-	patients,
-	setting,
-	staff,
-	Treatment,
-	treatments
-	} from "@modules";
+  AppointmentJSON,
+  patients,
+  setting,
+  staff,
+  Treatment,
+  treatments,
+} from "@modules";
 import {
-	comparableTime,
-	generateID,
-	hour,
-	isToday,
-	isTomorrow,
-	isYesterday,
-	num
-	} from "@utils";
+  comparableTime,
+  generateID,
+  hour,
+  isToday,
+  isTomorrow,
+  isYesterday,
+  num,
+} from "@utils";
 import { computed, observable } from "mobx";
 
 export class Appointment {
-	_id: string = generateID();
+  _id: string = generateID();
 
-	@observable triggerUpdate: number = 0;
+  @observable triggerUpdate: number = 0;
 
-	@observable timer: number | null = null;
+  @observable timer: number | null = null;
 
-	@observable complaint: string = "";
+  @observable complaint: string = "";
 
-	@observable diagnosis: string = "";
+  @observable diagnosis: string = "";
 
-	@observable treatmentID: string = (treatments.list[0] || { _id: "" })._id;
+  @observable treatmentID: string = (treatments.list[0] || { _id: "" })._id;
 
-	@observable units: number = 1;
+  @observable units: number = 1;
 
-	@observable treatUnitGroup:  { treatment: string; unit: number; fees: number }[]  = [];
+  @observable treatUnitGroup: {
+    treatment: string;
+    unit: number;
+    fees: number;
+  }[] = [];
 
-	@observable patientID: string = "";
+  @observable patientID: string = "";
 
-	@observable staffID: string[] = [];
+  @observable staffID: string[] = [];
 
-	@observable date: number = new Date().getTime();
+  @observable date: number = new Date().getTime();
 
-	@observable involvedTeeth: number[] = [];
+  @observable involvedTeeth: number[] = [];
 
-	@observable time: number = 0;
+  @observable time: number = 0;
 
-	@observable finalPrice: number = 0;
-	@observable paidAmount: number = 0;
+  @observable finalPrice: number = 0;
 
-	@observable isDone: boolean = false;
+  @observable paidAmount: number = 0;
 
-	@observable notes: string = "";
-	@observable status: string = "";
+  @observable isDone: boolean = false;
 
-	@observable prescriptions: { prescription: string; id: string }[] = [];
+  @observable notes: string = "";
 
-	@computed get isPaid() {
-		return this.paidAmount >= this.finalPrice;
-	}
+  @observable status: string = "";
 
-	@computed get outstandingAmount() {
-		return Math.max(this.finalPrice - this.paidAmount, 0);
-	}
+  @observable discount: number = 0;
 
-	@computed get overpaidAmount() {
-		return Math.max(this.paidAmount - this.finalPrice, 0);
-	}
+  @observable procedureId: string = "";
 
-	@computed
-	get operatingStaff() {
-		return staff.list.filter(
-			member => this.staffID.indexOf(member._id) !== -1
-		);
-	}
+  @observable prescriptions: { prescription: string; id: string }[] = [];
 
-	@computed
-	get patient() {
-		return patients.list.find(x => x._id === this.patientID);
-	}
+  @computed get isPaid() {
+    return this.paidAmount >= this.finalPrice;
+  }
 
-	@computed
-	get treatment(): undefined | Treatment {
-		return treatments.list[treatments.getIndexByID(this.treatmentID)];
-	}
+  @computed get outstandingAmount() {
+    return Math.max(this.finalPrice - this.paidAmount, 0);
+  }
 
-	@computed
-	get expenses() {		
-		return this.myprice;
-	}
+  @computed get overpaidAmount() {
+    return Math.max(this.paidAmount - this.finalPrice, 0);
+  }
 
-	@computed
-	get totalExpenses() {
-		return this.myprice + this.spentTimeValue;
-	}
+  @computed
+  get operatingStaff() {
+    return staff.list.filter(
+      (member) => this.staffID.indexOf(member._id) !== -1
+    );
+  }
 
-	@computed
-	get profit() {		
-		return this.finalPrice - this.totalExpenses;
-	}
+  @computed
+  get patient() {
+    return patients.list.find((x) => x._id === this.patientID);
+  }
 
-	@computed
-	get myprice() {
-		let countfees = 0;
-		if (this.treatUnitGroup.length > 0){		
-			  for (let i = 0; i < this.treatUnitGroup.length; i++) {
-				countfees += this.treatUnitGroup[i].fees * this.treatUnitGroup[i].unit;
-			  }
-			  return countfees;
-		}
-		return countfees;
-	}
+  @computed
+  get treatment(): undefined | Treatment {
+    return treatments.list[treatments.getIndexByID(this.treatmentID)];
+  }
 
-	@computed
-	get profitPercentage() {
-		return isNaN(this.profit / this.finalPrice)
-			? 0
-			: this.profit / this.finalPrice;
-	}
+  @computed
+  get expenses() {
+    return this.myprice;
+  }
 
-	@computed
-	get isOutstanding() {
-		return this.isDone && this.outstandingAmount !== 0;
-	}
+  @computed
+  get totalExpenses() {
+    return this.myprice + this.spentTimeValue;
+  }
 
-	@computed
-	get isOverpaid() {
-		return this.isDone && this.overpaidAmount !== 0;
-	}
+  @computed
+  get profit() {
+    let totalDiscount = this.discount;
+    if (this.insuranceDetails) {
+      totalDiscount = totalDiscount + this.insuranceDetails.discount;
+    }
+    return this.finalPrice - (this.finalPrice * totalDiscount) / 100;
+    // return this.finalPrice - this.totalExpenses;
+  }
 
-	@computed
-	get dueToday() {
-		return isToday(this.date) && !this.isDone;
-	}
+  @computed
+  get myprice() {
+    let countfees = 0;
+    if (this.treatUnitGroup.length > 0) {
+      for (let i = 0; i < this.treatUnitGroup.length; i++) {
+        countfees += this.treatUnitGroup[i].fees * this.treatUnitGroup[i].unit;
+      }
+      return countfees;
+    }
+    return countfees;
+  }
 
-	@computed
-	get dueTomorrow() {
-		return isTomorrow(this.date);
-	}
+  @computed
+  get profitPercentage() {
+    return isNaN(this.profit / this.finalPrice)
+      ? 0
+      : this.profit / this.finalPrice;
+  }
 
-	@computed
-	get dueYesterday() {
-		return isYesterday(this.date);
-	}
+  @computed
+  get isOutstanding() {
+    return this.isDone && this.outstandingAmount !== 0;
+  }
 
-	@computed
-	get missed() {
-		return (
-			new Date().getTime() - new Date(this.date).getTime() > 0 &&
-			!this.isDone &&
-			!this.dueToday
-		);
-	}
+  @computed
+  get isOverpaid() {
+    return this.isDone && this.overpaidAmount !== 0;
+  }
 
-	@computed
-	get future() {
-		return (
-			!this.dueToday &&
-			!this.dueTomorrow &&
-			!this.isDone &&
-			this.date > new Date().getTime()
-		);
-	}
+  @computed
+  get dueToday() {
+    return isToday(this.date) && !this.isDone;
+  }
 
-	@computed get dateFloor() {
-		const d = comparableTime(new Date(this.date));
-		return new Date(`${d.y}/${d.m + 1}/${d.d}`);
-	}
+  @computed
+  get dueTomorrow() {
+    return isTomorrow(this.date);
+  }
 
-	@computed get formattedTime() {
-		return new Date(this.date)
-			.toLocaleTimeString()
-			.replace(/:[0-9]{2} /, " ");
-	}
+  @computed
+  get dueYesterday() {
+    return isYesterday(this.date);
+  }
 
-	@computed
-	get spentTimeValue() {
-		return num(setting.getSetting("hourlyRate")) * (this.time / hour);
-	}
+  @computed
+  get missed() {
+    return (
+      new Date().getTime() - new Date(this.date).getTime() > 0 &&
+      !this.isDone &&
+      !this.dueToday
+    );
+  }
 
-	@computed
-	get searchableString() {
-		return `
+  @computed
+  get future() {
+    return (
+      !this.dueToday &&
+      !this.dueTomorrow &&
+      !this.isDone &&
+      this.date > new Date().getTime()
+    );
+  }
+
+  @computed get dateFloor() {
+    const d = comparableTime(new Date(this.date));
+    return new Date(`${d.y}/${d.m + 1}/${d.d}`);
+  }
+
+  @computed get formattedTime() {
+    return new Date(this.date).toLocaleTimeString().replace(/:[0-9]{2} /, " ");
+  }
+
+  @computed
+  get spentTimeValue() {
+    return num(setting.getSetting("hourlyRate")) * (this.time / hour);
+  }
+
+  @computed
+  get insuranceDetails() {
+    const { insurance } = this.patient;
+    if (insurance) {
+      return insurance;
+    }
+    return { name: "", discount: 0 };
+  }
+
+  @computed
+  get searchableString() {
+    return `
 				${this.complaint}
                 ${this.diagnosis}
                 ${new Date(this.date).toDateString()}
@@ -192,69 +214,69 @@ export class Appointment {
 				${this.dueTomorrow ? "tomorrow" : ""}
 				${this.future ? "future" : ""}
 				${(this.patient || { name: "" }).name}
-				${this.operatingStaff.map(x => x.name).join(" ")}
+				${this.operatingStaff.map((x) => x.name).join(" ")}
 				${this.notes}
 		`.toLowerCase();
-	}
+  }
 
-	constructor(json?: AppointmentJSON) {
-		if (json) {
-			this.fromJSON(json);
-		}
-	}
+  constructor(json?: AppointmentJSON) {
+    if (json) {
+      this.fromJSON(json);
+    }
+  }
 
-	fromJSON(json: AppointmentJSON) {
-		this._id = json._id;
-		this.treatmentID = json.treatmentID;
-		this.patientID = json.patientID;
-		this.date = json.date;
-		this.involvedTeeth = json.involvedTeeth;
-		this.paidAmount = json.paidAmount;
-		this.finalPrice = json.finalPrice || 0;
-		this.isDone =
-			typeof json.isDone === "undefined"
-				? (json as any).done
-				: json.isDone;
-		this.prescriptions = json.prescriptions;
-		this.treatUnitGroup = json.treatUnitGroup;
-		this.time = json.time;
-		this.diagnosis = json.diagnosis;
-		this.complaint = json.complaint;
-		this.staffID = json.staffID || json.doctorsID || [];
-		this.units = json.units || 1;
-		this.status = json.status || 'Unconfirmed';
-		this.notes = json.notes
-			? json.notes
-			: json.complaint && json.diagnosis
-			? `Complaint: ${json.complaint}.
+  fromJSON(json: AppointmentJSON) {
+    this._id = json._id;
+    this.treatmentID = json.treatmentID;
+    this.patientID = json.patientID;
+    this.date = json.date;
+    this.involvedTeeth = json.involvedTeeth;
+    this.paidAmount = json.paidAmount;
+    this.discount = json.discount;
+    this.finalPrice = json.finalPrice || 0;
+    this.isDone =
+      typeof json.isDone === "undefined" ? (json as any).done : json.isDone;
+    this.prescriptions = json.prescriptions;
+    this.treatUnitGroup = json.treatUnitGroup;
+    this.time = json.time;
+    this.diagnosis = json.diagnosis;
+    this.complaint = json.complaint;
+    this.staffID = json.staffID || json.doctorsID || [];
+    this.units = json.units || 1;
+    this.status = json.status || "Unconfirmed";
+    this.notes = json.notes
+      ? json.notes
+      : json.complaint && json.diagnosis
+      ? `Complaint: ${json.complaint}.
 Diagnosis: ${json.diagnosis}`
-			: "";
-	}
+      : "";
+  }
 
-	toJSON(): AppointmentJSON {
-		return {
-			_id: this._id,
-			treatmentID: this.treatmentID,
-			patientID: this.patientID,
-			date: this.date,
-			status: this.status,
-			involvedTeeth: Array.from(this.involvedTeeth),
-			paidAmount: this.paidAmount,
-			finalPrice: this.finalPrice || 0,
-			isDone: this.isDone,
-			prescriptions: Array.from(this.prescriptions),
-			treatUnitGroup : Array.from(this.treatUnitGroup),
-			time: this.time,
-			diagnosis: this.diagnosis,
-			complaint: this.complaint,
-			staffID: Array.from(this.staffID),
-			units: this.units,
-			notes: this.notes
-		};
-	}
+  toJSON(): AppointmentJSON {
+    return {
+      _id: this._id,
+      treatmentID: this.treatmentID,
+      patientID: this.patientID,
+      date: this.date,
+      status: this.status,
+      involvedTeeth: Array.from(this.involvedTeeth),
+      paidAmount: this.paidAmount,
+      finalPrice: this.finalPrice || 0,
+      isDone: this.isDone,
+      prescriptions: Array.from(this.prescriptions),
+      treatUnitGroup: Array.from(this.treatUnitGroup),
+      time: this.time,
+      diagnosis: this.diagnosis,
+      complaint: this.complaint,
+      staffID: Array.from(this.staffID),
+      units: this.units,
+      notes: this.notes,
+      discount: this.discount,
+    };
+  }
 
-	setDate(value: number) {
-		this.date = value;
-		this.staffID = [];
-	}
+  setDate(value: number) {
+    this.date = value;
+    this.staffID = [];
+  }
 }

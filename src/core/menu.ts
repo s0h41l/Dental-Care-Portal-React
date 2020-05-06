@@ -55,20 +55,6 @@ class MenuData {
         },
       },
       {
-        icon: "consents",
-        name: "Consents",
-        order: -99,
-        key: "consents",
-        url: "",
-        onClick: () => {
-          window.open("https://www.365apex.com/support", "_blank");
-          // var link = document.createElement("a");
-          // link.href = "mailto:contact@365apex.com";
-          // document.body.appendChild(link);
-          // link.click();
-        },
-      },
-      {
         icon: "help",
         name: "Support",
         order: -99,
