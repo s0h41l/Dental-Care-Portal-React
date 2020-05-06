@@ -53,6 +53,9 @@ import { Table } from "react-bootstrap";
 import { DentalHistoryPanel } from "./dental-history";
 import { WhatsappShareButton, WhatsappIcon } from "react-share";
 import { parse, unparse } from "papaparse";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 @observer
 export class PatientsPage extends React.Component<{}, {}> {
@@ -389,6 +392,7 @@ export class PatientsPage extends React.Component<{}, {}> {
                             <Row gutter={12}>
                               <Col sm={24}>
                                 <TextField
+                                  label={text("Title")}
                                   value={this.state.newReportValue}
                                   multiline
                                   autoAdjustHeight
@@ -398,6 +402,12 @@ export class PatientsPage extends React.Component<{}, {}> {
                                     })
                                   }
                                   style={{ width: "95%", height: "500px" }}
+                                />
+                                <Editor
+                                  editorStyle={{ height: 500 }}
+                                  toolbarClassName="toolbarClassName"
+                                  wrapperClassName="wrapperClassName"
+                                  editorClassName="editorClassName"
                                 />
                               </Col>
                             </Row>
